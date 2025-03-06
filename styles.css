@@ -554,6 +554,55 @@ body.dark-theme #velocity-value {
     color: #ff5252;
 }
 
+/* MIDI Status Indicator */
+.midi-status {
+    margin-top: 16px;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+    background-color: #f8f9fa;
+    color: #333;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+body.dark-theme .midi-status {
+    background-color: #2d2d2d;
+    color: #eee;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.midi-dot {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    transition: background-color 0.3s ease;
+}
+
+.midi-status.connected .midi-dot {
+    background-color: #2ecc71;
+    box-shadow: 0 0 5px rgba(46, 204, 113, 0.5);
+}
+
+.midi-status.disconnected .midi-dot {
+    background-color: #aaa;
+}
+
+body.dark-theme .midi-status.connected .midi-dot {
+    background-color: #2ecc71;
+    box-shadow: 0 0 5px rgba(46, 204, 113, 0.5);
+}
+
+body.dark-theme .midi-status.disconnected .midi-dot {
+    background-color: #666;
+}
+
 button {
     padding: 12px 20px;
     background-color: #4361ee;

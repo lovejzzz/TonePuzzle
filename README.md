@@ -9,6 +9,8 @@ A web-based music training game that helps users practice melodic pattern recogn
 - **Dark Theme**: Enhanced Ear Mode with a dark theme for better focus and reduced eye strain.
 - **Sequence Transposition**: Learn to transpose melodic patterns to different starting notes.
 - **Adjustable Piano Volume**: Control the volume/intensity of the piano sounds.
+- **MIDI Keyboard Support**: Connect a MIDI keyboard to play notes and input answers.
+- **Computer Keyboard Support**: Use your computer keyboard as a piano (Z-M for lower octave, Q-U for upper octave).
 - **Responsive Design**: Works on desktop and mobile devices.
 - **Intuitive UI/UX**: Carefully designed interface with consistent styling and smooth transitions.
 
@@ -19,8 +21,9 @@ A web-based music training game that helps users practice melodic pattern recogn
 3. In Visual Mode, you'll see the original sequence displayed at the top.
 4. In Ear Mode (dark theme), you'll hear the sequence instead of seeing it.
 5. Play the sequence on the piano, transposed to start from the highlighted starting note.
-6. You can replay the sequence up to 3 times in Ear Mode using the replay buttons.
-7. Submit your answer to receive feedback and score points for correct sequences.
+6. You can use the on-screen piano, a MIDI keyboard, or your computer keyboard to input notes.
+7. You can replay the sequence up to 3 times in Ear Mode using the replay buttons.
+8. Submit your answer to receive feedback and score points for correct sequences.
 
 ## Technical Details
 
@@ -53,6 +56,13 @@ Then access the game at http://localhost:8080
 - **Immediate Feedback**: Visual cues for correct and incorrect answers.
 
 ## Recent Updates
+
+### Input Enhancements (March 2025)
+
+- **MIDI Keyboard Support**: Added support for MIDI keyboards to play notes and input answers.
+- **Computer Keyboard Support**: Implemented computer keyboard controls for playing the piano.
+- **MIDI Status Indicator**: Added a status indicator that shows when a MIDI keyboard is connected.
+- **Dynamic Velocity**: MIDI keyboard velocity is used to control note volume for expressive playing.
 
 ### UI/UX Enhancements (March 2025)
 

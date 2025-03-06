@@ -5,6 +5,10 @@ class Piano {
         this.activeNotes = new Map(); // Track currently playing notes
         this.velocity = 0.7; // Default velocity (0-1 range)
         this.onNotePlayed = null; // Callback for when a note is played
+        this.midiEnabled = false; // Track if MIDI is enabled
+        this.midiAccess = null; // Store MIDI access
+        this.midiInputs = []; // Store available MIDI inputs
+        this.activeMidiNotes = new Map(); // Track active MIDI notes
         
         // Rhodes piano characteristics - adjusted for purer sound
         this.settings = {
@@ -23,6 +27,7 @@ class Piano {
         };
         
         this.setupEventListeners();
+        this.initializeMIDI();
     }
     
     // Convert note name (e.g., "C4") to frequency in Hz
@@ -202,6 +207,17 @@ class Piano {
                 this.setVelocity(value);
             });
         }
+        
+        // Add keyboard event listeners for computer keyboard support
+        document.addEventListener('keydown', (e) => {
+            // Prevent repeated keydown events when key is held
+            if (e.repeat) return;
+            this.handleComputerKeyPress(e);
+        });
+        
+        document.addEventListener('keyup', (e) => {
+            this.handleComputerKeyRelease(e);
+        });
     }
     
     handleKeyPress(key) {
@@ -270,6 +286,211 @@ class Piano {
     
     setNotePlayedCallback(callback) {
         this.onNotePlayed = callback;
+    }
+    
+    // MIDI Support Methods
+    
+    initializeMIDI() {
+        // Check if Web MIDI API is supported
+        if (navigator.requestMIDIAccess) {
+            navigator.requestMIDIAccess({ sysex: false })
+                .then(this.onMIDISuccess.bind(this), this.onMIDIFailure.bind(this));
+            console.log('[PIANO] Requesting MIDI access...');
+        } else {
+            console.log('[PIANO] Web MIDI API is not supported in this browser.');
+        }
+    }
+    
+    onMIDISuccess(midiAccess) {
+        this.midiAccess = midiAccess;
+        this.midiEnabled = true;
+        console.log('[PIANO] MIDI access granted!');
+        
+        // Get list of inputs
+        this.midiInputs = [];
+        const inputs = this.midiAccess.inputs.values();
+        for (let input = inputs.next(); input && !input.done; input = inputs.next()) {
+            this.midiInputs.push(input.value);
+            input.value.onmidimessage = this.onMIDIMessage.bind(this);
+            console.log(`[PIANO] MIDI Input: ${input.value.name}`);
+        }
+        
+        // Show MIDI status
+        if (this.midiInputs.length > 0) {
+            console.log(`[PIANO] ${this.midiInputs.length} MIDI input(s) detected`);
+            this.showMIDIStatus(true);
+        } else {
+            console.log('[PIANO] No MIDI inputs detected');
+            this.showMIDIStatus(false);
+        }
+        
+        // Listen for connection changes
+        this.midiAccess.onstatechange = this.onMIDIStateChange.bind(this);
+    }
+    
+    onMIDIFailure(error) {
+        console.error('[PIANO] Failed to access MIDI devices:', error);
+        this.midiEnabled = false;
+        this.showMIDIStatus(false);
+    }
+    
+    onMIDIStateChange(event) {
+        // Handle device connect/disconnect
+        console.log(`[PIANO] MIDI connection state change: ${event.port.name} - ${event.port.state}`);
+        
+        // Refresh input list
+        if (event.port.type === 'input') {
+            if (event.port.state === 'connected') {
+                // Add the new input and set up its message handler
+                if (!this.midiInputs.includes(event.port)) {
+                    this.midiInputs.push(event.port);
+                    event.port.onmidimessage = this.onMIDIMessage.bind(this);
+                }
+                this.showMIDIStatus(true);
+            } else if (event.port.state === 'disconnected') {
+                // Remove the disconnected input
+                this.midiInputs = this.midiInputs.filter(input => input !== event.port);
+                if (this.midiInputs.length === 0) {
+                    this.showMIDIStatus(false);
+                }
+            }
+        }
+    }
+    
+    onMIDIMessage(message) {
+        // Parse MIDI message
+        const command = message.data[0] & 0xF0; // Mask channel (lower 4 bits)
+        const note = message.data[1]; // MIDI note number
+        const velocity = message.data[2] / 127; // Convert to 0-1 range
+        
+        // Handle note on/off messages
+        switch (command) {
+            case 0x90: // Note On
+                if (velocity > 0) {
+                    this.handleMIDINoteOn(note, velocity);
+                } else {
+                    // Some devices send Note On with velocity 0 instead of Note Off
+                    this.handleMIDINoteOff(note);
+                }
+                break;
+                
+            case 0x80: // Note Off
+                this.handleMIDINoteOff(note);
+                break;
+        }
+    }
+    
+    handleMIDINoteOn(midiNote, velocity) {
+        // Convert MIDI note number to note name (e.g., 60 -> C4)
+        const noteName = this.midiNoteToNoteName(midiNote);
+        console.log(`[PIANO] MIDI Note On: ${midiNote} (${noteName}) - Velocity: ${velocity}`);
+        
+        // Find the corresponding piano key
+        const pianoKey = this.findPianoKeyByNote(noteName);
+        
+        if (pianoKey) {
+            // Store the MIDI note to piano key mapping
+            this.activeMidiNotes.set(midiNote, pianoKey);
+            
+            // Visually activate the key and play the note
+            this.handleKeyPress(pianoKey);
+            
+            // Set velocity based on MIDI input
+            const originalVelocity = this.velocity;
+            this.setVelocity(velocity);
+            
+            // Reset to original velocity after playing the note
+            setTimeout(() => {
+                this.setVelocity(originalVelocity);
+            }, 10);
+        } else {
+            console.log(`[PIANO] No matching piano key found for MIDI note ${midiNote} (${noteName})`);
+        }
+    }
+    
+    handleMIDINoteOff(midiNote) {
+        console.log(`[PIANO] MIDI Note Off: ${midiNote}`);
+        
+        // Get the piano key associated with this MIDI note
+        const pianoKey = this.activeMidiNotes.get(midiNote);
+        
+        if (pianoKey) {
+            // Release the key
+            this.handleKeyRelease(pianoKey);
+            this.activeMidiNotes.delete(midiNote);
+        }
+    }
+    
+    midiNoteToNoteName(midiNote) {
+        const noteNames = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+        const octave = Math.floor(midiNote / 12) - 1;
+        const noteName = noteNames[midiNote % 12];
+        return `${noteName}${octave}`;
+    }
+    
+    findPianoKeyByNote(noteName) {
+        // Find the piano key with the matching note name
+        for (const key of this.pianoKeys) {
+            if (key.dataset.note === noteName) {
+                return key;
+            }
+        }
+        return null;
+    }
+    
+    showMIDIStatus(connected) {
+        // Create or update MIDI status indicator
+        let midiStatus = document.getElementById('midi-status');
+        
+        if (!midiStatus) {
+            midiStatus = document.createElement('div');
+            midiStatus.id = 'midi-status';
+            midiStatus.innerHTML = 'MIDI <span class="midi-dot"></span>';
+            document.querySelector('.controls').appendChild(midiStatus);
+        }
+        
+        if (connected) {
+            midiStatus.className = 'midi-status connected';
+        } else {
+            midiStatus.className = 'midi-status disconnected';
+        }
+    }
+    
+    // Computer keyboard support
+    handleComputerKeyPress(event) {
+        // Map computer keyboard keys to piano notes
+        const keyMap = {
+            'z': 'C3', 's': 'C#3', 'x': 'D3', 'd': 'D#3', 'c': 'E3', 'v': 'F3',
+            'g': 'F#3', 'b': 'G3', 'h': 'G#3', 'n': 'A3', 'j': 'A#3', 'm': 'B3',
+            'q': 'C4', '2': 'C#4', 'w': 'D4', '3': 'D#4', 'e': 'E4', 'r': 'F4',
+            '5': 'F#4', 't': 'G4', '6': 'G#4', 'y': 'A4', '7': 'A#4', 'u': 'B4'
+        };
+        
+        const note = keyMap[event.key.toLowerCase()];
+        if (note) {
+            // Find the corresponding piano key
+            const pianoKey = this.findPianoKeyByNote(note);
+            if (pianoKey && !event.repeat) {
+                this.handleKeyPress(pianoKey);
+            }
+        }
+    }
+    
+    handleComputerKeyRelease(event) {
+        const keyMap = {
+            'z': 'C3', 's': 'C#3', 'x': 'D3', 'd': 'D#3', 'c': 'E3', 'v': 'F3',
+            'g': 'F#3', 'b': 'G3', 'h': 'G#3', 'n': 'A3', 'j': 'A#3', 'm': 'B3',
+            'q': 'C4', '2': 'C#4', 'w': 'D4', '3': 'D#4', 'e': 'E4', 'r': 'F4',
+            '5': 'F#4', 't': 'G4', '6': 'G#4', 'y': 'A4', '7': 'A#4', 'u': 'B4'
+        };
+        
+        const note = keyMap[event.key.toLowerCase()];
+        if (note) {
+            const pianoKey = this.findPianoKeyByNote(note);
+            if (pianoKey) {
+                this.handleKeyRelease(pianoKey);
+            }
+        }
     }
 }
 
