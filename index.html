@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tone Puzzle - Music Training Game</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-content">
+                <h1><span class="title-tone">Tone</span><span class="title-puzzle">Puzzle</span></h1>
+                <button id="start-game">Start Game</button>
+                <div class="score-container">
+                    <span>Score: </span>
+                    <span id="score">0</span>
+                </div>
+            </div>
+        </header>
+
+        <main>
+            <div class="game-area">
+                <div class="sequence-display">
+                    <div class="sequence-header">
+                        <h2>Original Sequence</h2>
+                        <button id="replay-sequence" class="replay-btn" title="Replay Sequence">
+                            <span>▶</span>
+                        </button>
+                    </div>
+                    <div id="original-sequence" class="sequence"></div>
+                </div>
+
+                <div class="piano-container">
+                    <div class="keyboard">
+                        <!-- White keys -->
+                        <div class="white-key piano-key" id="key0" data-note="C3"></div>
+                        <div class="white-key piano-key" id="key2" data-note="D3"></div>
+                        <div class="white-key piano-key" id="key4" data-note="E3"></div>
+                        <div class="white-key piano-key" id="key5" data-note="F3"></div>
+                        <div class="white-key piano-key" id="key7" data-note="G3"></div>
+                        <div class="white-key piano-key" id="key9" data-note="A3"></div>
+                        <div class="white-key piano-key" id="key11" data-note="B3"></div>
+                        <div class="white-key piano-key" id="key12" data-note="C4"></div>
+                        <div class="white-key piano-key" id="key14" data-note="D4"></div>
+                        <div class="white-key piano-key" id="key16" data-note="E4"></div>
+                        <div class="white-key piano-key" id="key17" data-note="F4"></div>
+                        <div class="white-key piano-key" id="key19" data-note="G4"></div>
+                        <div class="white-key piano-key" id="key21" data-note="A4"></div>
+                        <div class="white-key piano-key" id="key23" data-note="B4"></div>
+                        <div class="white-key piano-key" id="key24" data-note="C5"></div>
+
+                        <!-- Black keys -->
+                        <div class="black-key piano-key" id="key1" data-note="C#3"></div>
+                        <div class="black-key piano-key" id="key3" data-note="D#3"></div>
+                        <div class="black-key piano-key" id="key6" data-note="F#3"></div>
+                        <div class="black-key piano-key" id="key8" data-note="G#3"></div>
+                        <div class="black-key piano-key" id="key10" data-note="A#3"></div>
+                        <div class="black-key piano-key" id="key13" data-note="C#4"></div>
+                        <div class="black-key piano-key" id="key15" data-note="D#4"></div>
+                        <div class="black-key piano-key" id="key18" data-note="F#4"></div>
+                        <div class="black-key piano-key" id="key20" data-note="G#4"></div>
+                        <div class="black-key piano-key" id="key22" data-note="A#4"></div>
+                    </div>
+                    <!-- Piano controls section removed as button moved to header -->
+                </div>
+
+                <div class="sequence-input">
+                    <h2>Your Sequence</h2>
+                    <div id="user-sequence" class="sequence"></div>
+                </div>
+            </div>
+
+            <div class="controls">
+                <div class="mode-toggle">
+                    <span>Visual Mode</span>
+                    <label class="switch">
+                        <input type="checkbox" id="mode-switch">
+                        <span class="slider round"></span>
+                    </label>
+                    <span>Ear Training</span>
+                </div>
+                
+                <div class="velocity-control">
+                    <label for="velocity-slider">Piano Volume: </label>
+                    <input type="range" id="velocity-slider" min="0" max="1" value="0.7" step="0.05">
+                    <span id="velocity-value">0.7</span>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="piano.js"></script>
+    <script src="game.js"></script>
+</body>
+</html> 
