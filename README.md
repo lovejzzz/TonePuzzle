@@ -11,6 +11,7 @@ A web-based music training game that helps users practice melodic pattern recogn
 - **Adjustable Piano Volume**: Control the volume/intensity of the piano sounds.
 - **MIDI Keyboard Support**: Connect a MIDI keyboard to play notes and input answers.
 - **Computer Keyboard Support**: Use your computer keyboard as a piano (Z-M for lower octave, Q-U for upper octave).
+- **Progressive Level System**: Gradually increasing difficulty with sequence lengths from 2 to 13 notes across 12 major levels.
 - **Responsive Design**: Works on desktop and mobile devices.
 - **Intuitive UI/UX**: Carefully designed interface with consistent styling and smooth transitions.
 
@@ -23,7 +24,18 @@ A web-based music training game that helps users practice melodic pattern recogn
 5. Play the sequence on the piano, transposed to start from the highlighted starting note.
 6. You can use the on-screen piano, a MIDI keyboard, or your computer keyboard to input notes.
 7. You can replay the sequence up to 3 times in Ear Mode using the replay buttons.
-8. Submit your answer to receive feedback and score points for correct sequences.
+8. Submit your answer to receive feedback and progress through the levels.
+9. The game features a progressive level system with increasing difficulty.
+
+## Level System
+
+- The game features 12 major levels (1-12), each with 3 minor levels (1-3).
+- Each major level increases the sequence length by one note.
+- Level 1 starts with 2 notes and progresses up to 13 notes at Level 12.
+- Complete all three minor levels to advance to the next major level.
+- When completing a major level, the "Add one note!" button indicates progression to a longer sequence.
+- The current level is displayed at the top of the screen.
+- Complete Level 12-3 to win the game!
 
 ## Technical Details
 
