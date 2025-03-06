@@ -1,23 +1,26 @@
-# Sequence Puzzle - Music Training Game
+# Tone Puzzle - Music Training Game
 
-A web-based music training game that helps users practice melodic pattern recognition and transposition skills.
+A web-based music training game that helps users practice melodic pattern recognition and transposition skills through an intuitive, visually appealing interface.
 
 ## Features
 
 - **Synthesized Rhodes Piano**: Uses the Web Audio API to create realistic Rhodes electric piano sounds without requiring audio samples.
-- **Visual and Ear Training Modes**: Practice both reading and hearing melodic patterns.
+- **Visual and Ear Modes**: Practice both reading and hearing melodic patterns with mode-specific interface optimizations.
+- **Dark Theme**: Enhanced Ear Mode with a dark theme for better focus and reduced eye strain.
 - **Sequence Transposition**: Learn to transpose melodic patterns to different starting notes.
 - **Adjustable Piano Volume**: Control the volume/intensity of the piano sounds.
 - **Responsive Design**: Works on desktop and mobile devices.
+- **Intuitive UI/UX**: Carefully designed interface with consistent styling and smooth transitions.
 
 ## How to Play
 
 1. Click the "Start Game" button to begin.
-2. In Visual Mode, you'll see the original sequence displayed at the top.
-3. Play the sequence on the piano, transposed to start from the given starting note.
-4. In Ear Training Mode, you'll hear the sequence instead of seeing it.
-5. You can replay the sequence up to 3 times in Ear Training Mode.
-6. Score points for correct sequences and lose points for incorrect ones.
+2. Use the toggle switch in the header to select between Visual Mode and Ear Mode.
+3. In Visual Mode, you'll see the original sequence displayed at the top.
+4. In Ear Mode (dark theme), you'll hear the sequence instead of seeing it.
+5. Play the sequence on the piano, transposed to start from the highlighted starting note.
+6. You can replay the sequence up to 3 times in Ear Mode using the replay buttons.
+7. Submit your answer to receive feedback and score points for correct sequences.
 
 ## Technical Details
 
@@ -37,13 +40,28 @@ python -m http.server 8080
 
 Then access the game at http://localhost:8080
 
-## Game Features
+## UI/UX Features
 
-- Visual and Ear Training modes
-- Score tracking
-- Sequence transposition practice
-- Realistic piano interface
-- Immediate feedback on performance
+- **Dual Mode Interface**: Seamlessly switch between Visual and Ear modes with a toggle in the header.
+- **Dark Theme**: Automatic dark theme activation in Ear Mode for enhanced focus.
+- **Consistent Color Scheme**: Coordinated color palette across both modes.
+- **Visual Feedback**: Clear highlighting of starting notes and level completion.
+- **Responsive Controls**: Intuitive button placement and interactive elements.
+- **Smooth Transitions**: Elegant transitions between modes and game states.
+- **Accessible Piano Interface**: Clearly labeled keys with mode-specific styling.
+- **Score Tracking**: Prominently displayed score in the header.
+- **Immediate Feedback**: Visual cues for correct and incorrect answers.
+
+## Recent Updates
+
+### UI/UX Enhancements (March 2025)
+
+- **Improved Header Layout**: Relocated the mode toggle switch to the header between the Start Game button and Score display for better accessibility and workflow.
+- **Consistent Sizing**: Standardized the size and styling of header elements (Start Game button, Mode Toggle, and Score display) for visual harmony.
+- **Dark Theme Refinements**: Enhanced dark theme with consistent color schemes and improved visual feedback.
+- **Note Visibility**: Optimized note label display in dark mode for better readability.
+- **Interactive Elements**: Improved styling of buttons and controls with consistent hover effects and transitions.
+- **Feedback System**: Enhanced visual feedback for level completion and correct/incorrect answers.
 
 ## Troubleshooting
 

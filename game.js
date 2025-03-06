@@ -1,6 +1,6 @@
 class SequencePuzzle {
     constructor() {
-        this.score = 0;
+        this.level = 1; // Track level instead of score
         this.isEarTrainingMode = false;
         this.audioReplaysLeft = 3;
         this.currentSequence = [];
@@ -12,6 +12,7 @@ class SequencePuzzle {
         this.playbackSpeed = 500; // Default playback speed in ms
         this.availableNotes = this.getAvailableNotes(); // All notes available on the keyboard
         this.hasStartedSequence = false; // Track if user has started entering a sequence
+        this.emptyNoteBoxes = []; // Store references to empty note boxes for ear training mode
         
         this.initializeElements();
         this.setupEventListeners();
@@ -24,6 +25,16 @@ class SequencePuzzle {
         this.startButton = document.getElementById('start-game');
         this.modeSwitch = document.getElementById('mode-switch');
         this.replaySequenceButton = document.getElementById('replay-sequence');
+        this.playUserSequenceButton = document.getElementById('play-user-sequence');
+        this.submitSequenceButton = document.getElementById('submit-sequence');
+        
+        // Initially hide the submit button until the user has entered enough notes
+        this.submitSequenceButton.style.display = 'none';
+        
+        // Create container for empty note boxes in ear training mode
+        this.emptyBoxesContainer = document.createElement('div');
+        this.emptyBoxesContainer.className = 'empty-boxes-container';
+        this.originalSequenceElement.parentNode.insertBefore(this.emptyBoxesContainer, this.originalSequenceElement);
         
         // Create feedback message element
         this.feedbackElement = document.createElement('div');
@@ -52,8 +63,14 @@ class SequencePuzzle {
         // Mode toggle switch
         this.modeSwitch.addEventListener('change', () => this.toggleMode());
         
-        // Replay button
+        // Replay button for original sequence
         this.replaySequenceButton.addEventListener('click', () => this.playOriginalSequence());
+        
+        // Play user sequence button
+        this.playUserSequenceButton.addEventListener('click', () => this.playUserSequence());
+        
+        // Submit sequence button
+        this.submitSequenceButton.addEventListener('click', () => this.checkSequence());
         
         // Set up note played callback with logging
         window.piano.setNotePlayedCallback((note) => {
@@ -79,11 +96,14 @@ class SequencePuzzle {
         this.startButton.classList.add('restart');
         
         // Reset the game state
-        this.score = 0;
+        this.level = 1;
         this.updateScore();
         this.generateNewSequence();
         this.startButton.disabled = false;
         this.hasStartedSequence = false;
+        
+        // Hide the submit button when starting a new game
+        this.submitSequenceButton.style.display = 'none';
         
         // Clear any previous starting note indicators
         this.clearStartingNoteIndicator();
@@ -267,6 +287,15 @@ class SequencePuzzle {
         if (!this.isEarTrainingMode) {
             this.originalSequence.forEach(note => {
                 const noteElement = this.createNoteElement(note);
+                
+                // Make original sequence notes clickable
+                noteElement.classList.add('clickable');
+                noteElement.addEventListener('click', () => {
+                    if (!this.isPlaying) {
+                        this.playNoteWithVisualFeedback(note);
+                    }
+                });
+                
                 this.originalSequenceElement.appendChild(noteElement);
             });
         }
@@ -316,10 +345,31 @@ class SequencePuzzle {
         const noteTextSpan = document.createElement('span');
         noteTextSpan.classList.add('note-text');
         noteTextSpan.textContent = displayName + octave;
-        noteElement.appendChild(noteTextSpan);
+        
+        // For original sequence notes, add the text directly to the note element
+        if (!isUserNote) {
+            noteElement.appendChild(noteTextSpan);
+        }
+        // For user notes, the text will be added to the note-body element later
         
         if (isUserNote) {
             noteElement.classList.add('user-note');
+            
+            // Make user notes clickable for playback
+            noteElement.classList.add('clickable');
+            
+            // Create a note body element that will handle the click for playback
+            const noteBody = document.createElement('div');
+            noteBody.classList.add('note-body');
+            noteBody.addEventListener('click', () => {
+                if (!this.isPlaying) {
+                    this.playNoteWithVisualFeedback(cleanNote);
+                }
+            });
+            
+            // Move the note text into the note body
+            noteBody.appendChild(noteTextSpan);
+            noteElement.appendChild(noteBody);
             
             // Add delete functionality only for user-added notes (not the starting note)
             if (this.userSequence.length > 1 || cleanNote !== this.startNote) {
@@ -366,13 +416,13 @@ class SequencePuzzle {
         if (cleanNote === this.startNote) {
             console.log(`[GAME] Starting note ${cleanNote} clicked - not adding to sequence`);
             // Play the note but don't add it to the sequence
-            window.piano.playNote(cleanNote);
+            this.playNoteWithVisualFeedback(cleanNote);
             return;
         }
         
-        // If we already have 3 notes (plus the start note = 4 total), don't add more but check the sequence
+        // If we already have 3 notes (plus the start note = 4 total), don't add more
+        // No longer automatically checking the sequence - user must click submit
         if (this.userSequence.length >= 3) {
-            this.checkSequence();
             return;
         }
         
@@ -397,12 +447,11 @@ class SequencePuzzle {
         const noteElement = this.createNoteElement(cleanNote, true); // Pass true to indicate this is a user note
         this.userSequenceElement.appendChild(noteElement);
         
-        // Check if the user has entered 3 notes (plus the start note = 4 total)
+        // Show the submit button only when the user has entered 3 notes (plus the starting note = 4 total)
         if (this.userSequence.length === 3) {
-            // Add a small delay to ensure the UI updates before checking
-            setTimeout(() => {
-                this.checkSequence();
-            }, 100);
+            this.submitSequenceButton.style.display = 'block';
+        } else {
+            this.submitSequenceButton.style.display = 'none';
         }
     }
     
@@ -424,6 +473,11 @@ class SequencePuzzle {
             // Remove from the array (adjust index if there's a start note)
             const startNoteOffset = this.userSequenceElement.querySelector('.start-note') ? 1 : 0;
             this.userSequence.splice(noteIndex - startNoteOffset, 1);
+            
+            // Hide the submit button if we no longer have enough notes
+            if (this.userSequence.length < 3) {
+                this.submitSequenceButton.style.display = 'none';
+            }
         }
     }
 
@@ -464,9 +518,9 @@ class SequencePuzzle {
         console.log("Sequence is correct:", isCorrect);
 
         if (isCorrect) {
-            this.score += 100;
+            this.level += 1; // Increase level instead of score
             this.updateScore();
-            this.showFeedback("Correct! Well done!", "success");
+            this.showFeedback(`Level ${this.level-1} completed!`, "success");
             
             // Speed up playback for the demonstration
             this.playbackSpeed = 250; // Twice as fast
@@ -483,9 +537,10 @@ class SequencePuzzle {
                 });
             }, 1000);
         } else {
-            this.score = Math.max(0, this.score - 50);
+            // Game over - reset to level 1
+            this.level = 1;
             this.updateScore();
-            this.showFeedback("Incorrect. Try again!", "error");
+            this.showFeedback("Game Over! Starting over from level 1", "error");
             
             setTimeout(() => {
                 this.userSequence = [];
@@ -638,39 +693,122 @@ class SequencePuzzle {
     }
 
     updateScore() {
-        this.scoreElement.textContent = this.score;
+        this.scoreElement.textContent = this.level;
     }
 
     toggleMode() {
         this.isEarTrainingMode = this.modeSwitch.checked;
         
         if (this.isEarTrainingMode) {
+            // Enable dark theme for Ear Mode
+            document.body.classList.add('dark-theme');
+            
             this.originalSequenceElement.style.display = 'none';
+            this.emptyBoxesContainer.style.display = 'flex';
+            // Create empty note boxes for ear training mode
+            this.createEmptyNoteBoxes();
             // Make sure to display the starting note in ear training mode too
             this.displaySequence();
-            if (this.originalSequence.length > 0) {
-                // Auto-play when switching to ear training mode
+            
+            // Only auto-play when switching to ear training mode if the next button is not visible
+            // This prevents auto-playing after level completion when the next button is shown
+            if (this.originalSequence.length > 0 && this.nextButton.style.display !== 'block') {
                 this.playOriginalSequence();
             }
         } else {
+            // Disable dark theme for Visual Mode
+            document.body.classList.remove('dark-theme');
+            
             this.originalSequenceElement.style.display = 'flex';
+            this.emptyBoxesContainer.style.display = 'none';
             this.displaySequence();
         }
     }
 
+    // Create empty note boxes for ear training mode
+    createEmptyNoteBoxes() {
+        // Clear any existing empty boxes
+        this.emptyBoxesContainer.innerHTML = '';
+        this.emptyNoteBoxes = [];
+        
+        // Create 4 empty note boxes
+        for (let i = 0; i < 4; i++) {
+            const emptyBox = document.createElement('div');
+            emptyBox.className = 'empty-note-box';
+            this.emptyBoxesContainer.appendChild(emptyBox);
+            this.emptyNoteBoxes.push(emptyBox);
+        }
+    }
+    
     // Play only the original sequence (without the start note)
     async playOriginalSequence() {
         if (this.isPlaying) return;
         this.isPlaying = true;
         
         // Play sequence
-        for (const note of this.originalSequence) {
-            await this.playNote(note);
+        for (let i = 0; i < this.originalSequence.length; i++) {
+            const note = this.originalSequence[i];
+            
+            // In ear training mode, blink the corresponding empty box
+            if (this.isEarTrainingMode && this.emptyNoteBoxes.length > i) {
+                this.emptyNoteBoxes[i].classList.add('blinking');
+                await this.playNote(note, false); // Don't show key press in ear training mode
+                this.emptyNoteBoxes[i].classList.remove('blinking');
+            } else {
+                await this.playNote(note);
+            }
         }
         
         // In ear training mode, make sure to highlight the starting note
         if (this.isEarTrainingMode) {
             this.highlightStartingNote();
+        }
+        
+        this.isPlaying = false;
+    }
+    
+    // Play a single note with visual feedback on the piano
+    async playNoteWithVisualFeedback(note) {
+        const cleanNote = note.trim();
+        console.log(`Playing single note with feedback: '${cleanNote}'`);
+        
+        // Find the key element for this note
+        const keyElements = Array.from(document.querySelectorAll('.piano-key'));
+        const keyElement = keyElements.find(key => key.dataset.note === cleanNote);
+        
+        if (keyElement) {
+            // Add playing class for visual feedback
+            keyElement.classList.add('playing', 'active');
+            
+            // Play the note
+            window.piano.playNote(cleanNote);
+            
+            // Remove the visual feedback after a short delay
+            setTimeout(() => {
+                window.piano.stopNote(cleanNote);
+                keyElement.classList.remove('playing', 'active');
+            }, 300); // Shorter duration for single note playback
+        }
+    }
+    
+    // Play only the user sequence
+    async playUserSequence() {
+        if (this.isPlaying || this.userSequence.length === 0) return;
+        this.isPlaying = true;
+        
+        console.log('Playing user sequence with start note:', this.startNote, this.userSequence);
+        
+        // First play the starting note if it exists
+        if (this.startNote) {
+            const cleanStartNote = this.startNote.trim();
+            await this.playNote(cleanStartNote);
+        }
+        
+        // Then play the user sequence
+        for (const note of this.userSequence) {
+            const cleanNote = note.trim();
+            console.log(`Playing user note: '${cleanNote}'`);
+            await this.playNote(cleanNote);
         }
         
         this.isPlaying = false;
@@ -707,7 +845,7 @@ class SequencePuzzle {
         this.isPlaying = false;
     }
 
-    async playNote(note) {
+    async playNote(note, showKeyPress = true) {
         // Ensure the note is clean by trimming any whitespace
         const cleanNote = note.trim();
         console.log(`Playing note: '${cleanNote}'`);
@@ -718,8 +856,10 @@ class SequencePuzzle {
             const keyElement = keyElements.find(key => key.dataset.note === note);
             
             if (keyElement) {
-                // Add playing class for visual feedback
-                keyElement.classList.add('playing', 'active');
+                // Add playing class for visual feedback only if not in ear training mode or if explicitly requested
+                if (showKeyPress) {
+                    keyElement.classList.add('playing', 'active');
+                }
                 
                 // Play the note
                 window.piano.playNote(note);
@@ -728,7 +868,9 @@ class SequencePuzzle {
                 setTimeout(() => {
                     // Stop the note after the delay to prevent overlap
                     window.piano.stopNote(note);
-                    keyElement.classList.remove('playing', 'active');
+                    if (showKeyPress) {
+                        keyElement.classList.remove('playing', 'active');
+                    }
                     resolve();
                 }, this.playbackSpeed);
             } else {

@@ -12,6 +12,16 @@
             <div class="header-content">
                 <h1><span class="title-tone">Tone</span><span class="title-puzzle">Puzzle</span></h1>
                 <button id="start-game">Start Game</button>
+                
+                <div class="mode-toggle header-mode-toggle">
+                    <span>Visual Mode</span>
+                    <label class="switch">
+                        <input type="checkbox" id="mode-switch">
+                        <span class="slider round"></span>
+                    </label>
+                    <span>Ear Mode</span>
+                </div>
+                
                 <div class="score-container">
                     <span>Score: </span>
                     <span id="score">0</span>
@@ -66,21 +76,22 @@
                 </div>
 
                 <div class="sequence-input">
-                    <h2>Your Sequence</h2>
+                    <div class="sequence-header">
+                        <h2>Your Sequence</h2>
+                        <div class="sequence-controls">
+                            <button id="play-user-sequence" class="replay-btn" title="Play Your Sequence">
+                                <span>▶</span>
+                            </button>
+                            <button id="submit-sequence" class="submit-btn" title="Submit Sequence">
+                                Submit
+                            </button>
+                        </div>
+                    </div>
                     <div id="user-sequence" class="sequence"></div>
                 </div>
             </div>
 
-            <div class="controls">
-                <div class="mode-toggle">
-                    <span>Visual Mode</span>
-                    <label class="switch">
-                        <input type="checkbox" id="mode-switch">
-                        <span class="slider round"></span>
-                    </label>
-                    <span>Ear Training</span>
-                </div>
-                
+            <div class="controls">                
                 <div class="velocity-control">
                     <label for="velocity-slider">Piano Volume: </label>
                     <input type="range" id="velocity-slider" min="0" max="1" value="0.7" step="0.05">
