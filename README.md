@@ -55,6 +55,10 @@ python -m http.server 8080
 
 Then access the game at http://localhost:8080
 
+## Live Demo
+
+You can play the game online at: [lovejzzz.github.io/TonePuzzle/](https://lovejzzz.github.io/TonePuzzle/)
+
 ## UI/UX Features
 
 - **Dual Mode Interface**: Seamlessly switch between Visual and Ear modes with a toggle in the header.

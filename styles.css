@@ -125,6 +125,12 @@ h1 {
     position: relative;
 }
 
+/* Make the 'Puzzle' part of the title more visible in dark theme */
+body.dark-theme .title-puzzle {
+    color: #ff9e80; /* A coral/orange color that fits the art style but is more visible */
+    text-shadow: 0 0 8px rgba(255, 158, 128, 0.4); /* Subtle glow effect */
+}
+
 .title-tone::after {
     content: "";
     position: absolute;
