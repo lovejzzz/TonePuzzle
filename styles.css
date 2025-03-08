@@ -973,6 +973,144 @@ input:checked + .slider:before {
     letter-spacing: -0.01em;
 }
 
+/* Mobile Responsive Design */
+@media (max-width: 768px) {
+    .container {
+        padding: 15px 10px;
+    }
+    
+    .header-content {
+        flex-direction: column;
+        gap: 12px;
+        align-items: center;
+    }
+    
+    .piano {
+        height: 150px; /* Smaller piano height for mobile */
+    }
+    
+    .white-key {
+        width: 11%; /* Narrower keys for mobile */
+    }
+    
+    .black-key {
+        width: 6%; /* Narrower black keys */
+    }
+    
+    .white-key::before, .black-key::before {
+        font-size: 10px; /* Smaller note labels */
+        bottom: 5px;
+    }
+    
+    .controls {
+        flex-direction: column;
+        align-items: center;
+        gap: 12px;
+    }
+    
+    .velocity-control {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .feedback-message {
+        font-size: 1.1em;
+        padding: 15px 25px;
+        width: 80%;
+    }
+}
+
+/* iPad/Tablet Specific Adjustments */
+@media (min-width: 769px) and (max-width: 1024px) {
+    .white-key {
+        width: 9%; /* Better key width for tablets */
+    }
+    
+    .black-key {
+        width: 5%;
+    }
+}
+
+/* Touch-specific improvements */
+@media (hover: none) {
+    /* Increase tap target sizes for touch devices */
+    .button, .switch, #start-game, #submit-sequence, #clear-sequence, #level-selector,
+    .replay-btn, .clear-btn, .submit-btn, #replay-sequence, #play-user-sequence {
+        min-height: 44px; /* Apple's recommended minimum tap target size */
+        padding: 12px 20px;
+        margin: 4px; /* Add spacing between buttons */
+    }
+    
+    /* Improve touch feedback */
+    .white-key:active, .black-key:active {
+        transform: translateY(2px);
+    }
+    
+    /* Improve sequence display for touch */
+    .sequence .note {
+        min-width: 40px;
+        min-height: 40px;
+        margin: 4px;
+    }
+    
+    /* Make empty note boxes larger on touch devices */
+    .empty-note-box {
+        min-width: 40px;
+        min-height: 40px;
+        margin: 4px;
+    }
+    
+    /* Improve slider for touch devices */
+    input[type="range"] {
+        height: 30px; /* Taller slider for easier touch */
+    }
+    
+    /* Add more spacing in the game area */
+    .game-area {
+        padding: 10px;
+    }
+    
+    /* Orientation-specific layouts */
+    .game-area.portrait-mode {
+        flex-direction: column;
+    }
+    
+    .game-area.landscape-mode {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    
+    .game-area.portrait-mode .sequence-area {
+        width: 100%;
+        margin-bottom: 15px;
+    }
+    
+    .game-area.portrait-mode .piano-container {
+        width: 100%;
+    }
+    
+    .game-area.landscape-mode .sequence-area {
+        width: 40%;
+        margin-right: 10px;
+    }
+    
+    .game-area.landscape-mode .piano-container {
+        width: 55%;
+    }
+    
+    /* Improve scrolling on mobile */
+    .sequence-area {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+    }
+    
+    /* Ensure buttons are easier to tap */
+    button {
+        touch-action: manipulation;
+    }
+}
+
 .feedback-message.success {
     background-color: rgba(64, 192, 87, 0.95);
     color: white;

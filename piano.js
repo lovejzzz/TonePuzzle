@@ -9,6 +9,7 @@ class Piano {
         this.midiAccess = null; // Store MIDI access
         this.midiInputs = []; // Store available MIDI inputs
         this.activeMidiNotes = new Map(); // Track active MIDI notes
+        this.audioUnlocked = false; // Track if audio is unlocked for iOS
         
         // Rhodes piano characteristics - adjusted for purer sound
         this.settings = {
@@ -164,6 +165,9 @@ class Piano {
     }
     
     setupEventListeners() {
+        // iOS requires user interaction to start audio context
+        this.unlockAudioForIOS();
+        
         // Log all piano key data-note attributes for inspection
         console.log('=== PIANO KEY DATA-NOTE ATTRIBUTES ===');
         this.pianoKeys.forEach(key => {
@@ -286,6 +290,47 @@ class Piano {
     
     setNotePlayedCallback(callback) {
         this.onNotePlayed = callback;
+    }
+    
+    // iOS Audio Support
+    
+    unlockAudioForIOS() {
+        // iOS requires user interaction to start audio context
+        if (this.audioUnlocked) return;
+        
+        // Create an array of events that can unlock audio
+        const unlockEvents = ['touchstart', 'touchend', 'mousedown', 'keydown'];
+        
+        const unlockAudio = () => {
+            if (this.audioUnlocked) return;
+            
+            // Create a silent oscillator
+            const oscillator = this.audioContext.createOscillator();
+            const gainNode = this.audioContext.createGain();
+            gainNode.gain.value = 0;  // Silent
+            oscillator.connect(gainNode);
+            gainNode.connect(this.audioContext.destination);
+            oscillator.start(0);
+            oscillator.stop(0.001);
+            
+            // Resume the audio context if it's suspended (iOS requirement)
+            if (this.audioContext.state === 'suspended') {
+                this.audioContext.resume();
+            }
+            
+            console.log('[PIANO] Audio unlocked for iOS');
+            this.audioUnlocked = true;
+            
+            // Remove the event listeners once audio is unlocked
+            unlockEvents.forEach(event => {
+                document.body.removeEventListener(event, unlockAudio);
+            });
+        };
+        
+        // Add event listeners to unlock audio
+        unlockEvents.forEach(event => {
+            document.body.addEventListener(event, unlockAudio);
+        });
     }
     
     // MIDI Support Methods

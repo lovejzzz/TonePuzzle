@@ -15,9 +15,13 @@ class SequencePuzzle {
         this.hasStartedSequence = false; // Track if user has started entering a sequence
         this.emptyNoteBoxes = []; // Store references to empty note boxes for ear training mode
         this.sequenceLengthByLevel = this.getSequenceLengthByLevel(); // Map major level to sequence length
+        this.resizeTimeout = null; // For debouncing resize events
         
         this.initializeElements();
         this.setupEventListeners();
+        
+        // Initialize layout for current device/orientation
+        setTimeout(() => this.adjustLayoutForMobile(), 100);
     }
 
     initializeElements() {
@@ -88,6 +92,10 @@ class SequencePuzzle {
         
         // Level selector
         this.levelSelector.addEventListener('change', (e) => this.changeLevel(e.target.value));
+        
+        // Add orientation change handler for mobile devices
+        window.addEventListener('orientationchange', () => this.handleOrientationChange());
+        window.addEventListener('resize', () => this.handleResize());
         
         // Set up note played callback with logging
         window.piano.setNotePlayedCallback((note) => {
@@ -881,6 +889,55 @@ class SequencePuzzle {
         }
         
         this.isPlaying = false;
+    }
+    
+    // Handle orientation changes on mobile devices
+    handleOrientationChange() {
+        console.log('[GAME] Orientation changed');
+        // Allow the browser to complete the orientation change
+        setTimeout(() => {
+            this.adjustLayoutForMobile();
+        }, 300);
+    }
+    
+    // Handle window resize events
+    handleResize() {
+        // Use debounce to avoid excessive calls during resize
+        if (this.resizeTimeout) {
+            clearTimeout(this.resizeTimeout);
+        }
+        
+        this.resizeTimeout = setTimeout(() => {
+            console.log('[GAME] Window resized');
+            this.adjustLayoutForMobile();
+        }, 200);
+    }
+    
+    // Adjust layout for mobile devices
+    adjustLayoutForMobile() {
+        const isMobile = window.innerWidth < 768;
+        const isLandscape = window.innerWidth > window.innerHeight;
+        
+        // Get elements that need adjustments
+        const gameArea = document.querySelector('.game-area');
+        const pianoContainer = document.querySelector('.piano-container');
+        const sequenceArea = document.querySelector('.sequence-area');
+        
+        if (isMobile) {
+            // Apply mobile-specific adjustments
+            if (isLandscape) {
+                // Landscape orientation on mobile
+                gameArea.classList.add('landscape-mode');
+                gameArea.classList.remove('portrait-mode');
+            } else {
+                // Portrait orientation on mobile
+                gameArea.classList.add('portrait-mode');
+                gameArea.classList.remove('landscape-mode');
+            }
+        } else {
+            // Desktop layout
+            gameArea.classList.remove('portrait-mode', 'landscape-mode');
+        }
     }
     
     // Play a single note with visual feedback on the piano
