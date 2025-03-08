@@ -69,6 +69,13 @@ Then access the game at http://localhost:8080
 
 ## Recent Updates
 
+### Bug Fixes (March 2025)
+
+- **Ear Training Mode Display Fix**: Fixed the bug where ear training mode always showed 4 empty note boxes regardless of level. Now correctly displays the appropriate number of boxes based on the current level's sequence length (Level 1: 2 boxes, Level 2: 3 boxes, etc.).
+- **Level Changing Fix**: Ensured empty note boxes are properly updated when changing levels in ear training mode.
+- **User Input Improvements**: Fixed issue where players couldn't enter the starting note in the middle of a sequence.
+- **Feedback Layer Fix**: Adjusted the z-index of feedback messages to ensure they appear on top of other elements.
+
 ### Input Enhancements (March 2025)
 
 - **MIDI Keyboard Support**: Added support for MIDI keyboards to play notes and input answers.

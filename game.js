@@ -29,6 +29,8 @@ class SequencePuzzle {
         this.replaySequenceButton = document.getElementById('replay-sequence');
         this.playUserSequenceButton = document.getElementById('play-user-sequence');
         this.submitSequenceButton = document.getElementById('submit-sequence');
+        this.clearUserSequenceButton = document.getElementById('clear-user-sequence');
+        this.levelSelector = document.getElementById('level-selector');
         
         // Update score element to show level instead
         this.scoreElement.innerHTML = '<span id="level-display">1-1</span>';
@@ -61,6 +63,9 @@ class SequencePuzzle {
         if (replayAudioButton) {
             replayAudioButton.style.display = 'none';
         }
+        
+        // Update level selector to show the current level
+        this.updateLevelSelector();
     }
 
     setupEventListeners() {
@@ -77,6 +82,12 @@ class SequencePuzzle {
         
         // Submit sequence button
         this.submitSequenceButton.addEventListener('click', () => this.checkSequence());
+        
+        // Clear user sequence button
+        this.clearUserSequenceButton.addEventListener('click', () => this.clearUserSequence());
+        
+        // Level selector
+        this.levelSelector.addEventListener('change', (e) => this.changeLevel(e.target.value));
         
         // Set up note played callback with logging
         window.piano.setNotePlayedCallback((note) => {
@@ -195,6 +206,11 @@ class SequencePuzzle {
         this.userSequence = [];
         this.displaySequence();
         this.audioReplaysLeft = 3;
+        
+        // Update empty boxes in ear training mode if it's enabled
+        if (this.isEarTrainingMode) {
+            this.createEmptyNoteBoxes();
+        }
         
         // Add a visual indicator for the starting note on the keyboard
         this.highlightStartingNote();
@@ -447,9 +463,12 @@ class SequencePuzzle {
             return;
         }
         
-        // If we already have 3 notes (plus the start note = 4 total), don't add more
+        // Get the expected number of notes for the current level (minus the starting note)
+        const expectedInputCount = this.sequenceLengthByLevel[this.majorLevel] - 1;
+        
+        // If we already have the expected number of notes for this level, don't add more
         // No longer automatically checking the sequence - user must click submit
-        if (this.userSequence.length >= 3) {
+        if (this.userSequence.length >= expectedInputCount) {
             return;
         }
         
@@ -475,8 +494,7 @@ class SequencePuzzle {
         this.userSequenceElement.appendChild(noteElement);
         
         // Show the submit button only when the user has entered the correct number of notes for the current level
-        // Expected sequence length minus 1 (starting note)
-        const expectedInputCount = this.sequenceLengthByLevel[this.majorLevel] - 1;
+        // Check if we've entered all expected notes (calculated above)
         if (this.userSequence.length === expectedInputCount) {
             this.submitSequenceButton.style.display = 'block';
         } else {
@@ -628,7 +646,8 @@ class SequencePuzzle {
             setTimeout(() => {
                 this.userSequence = [];
                 this.hasStartedSequence = false;
-                this.displaySequence();
+                // Generate a new sequence for level 1-1 instead of just displaying the existing sequence
+                this.generateNewSequence();
                 this.hideFeedback();
             }, 2000);
         }
@@ -777,6 +796,15 @@ class SequencePuzzle {
 
     updateLevelDisplay() {
         this.levelDisplayElement.textContent = `${this.majorLevel}-${this.minorLevel}`;
+        // Also update the level selector
+        this.updateLevelSelector();
+    }
+    
+    // Update the level selector to reflect the current level
+    updateLevelSelector() {
+        if (this.levelSelector) {
+            this.levelSelector.value = `${this.majorLevel}-${this.minorLevel}`;
+        }
     }
 
     toggleMode() {
@@ -814,8 +842,13 @@ class SequencePuzzle {
         this.emptyBoxesContainer.innerHTML = '';
         this.emptyNoteBoxes = [];
         
-        // Create 4 empty note boxes
-        for (let i = 0; i < 4; i++) {
+        // Get the exact sequence length for the current level from the sequence length map
+        const currentLevelSequenceLength = this.sequenceLengthByLevel[this.majorLevel];
+        
+        console.log(`[GAME] Creating ${currentLevelSequenceLength} empty boxes for level ${this.majorLevel}-${this.minorLevel}`);
+        
+        // Create the correct number of empty note boxes based on the current level
+        for (let i = 0; i < currentLevelSequenceLength; i++) {
             const emptyBox = document.createElement('div');
             emptyBox.className = 'empty-note-box';
             this.emptyBoxesContainer.appendChild(emptyBox);
@@ -991,6 +1024,56 @@ class SequencePuzzle {
         keyElements.forEach(key => {
             key.classList.remove('starting-note');
         });
+    }
+    
+    // Clear the user sequence but keep the starting note
+    clearUserSequence() {
+        // Don't allow clearing during playback
+        if (this.isPlaying) {
+            return;
+        }
+        
+        // Keep only the starting note in the display
+        const startNoteElement = this.userSequenceElement.querySelector('.start-note');
+        this.userSequenceElement.innerHTML = '';
+        if (startNoteElement) {
+            this.userSequenceElement.appendChild(startNoteElement);
+        }
+        
+        // Reset the user sequence array
+        this.userSequence = [];
+        this.hasStartedSequence = true; // Keep this true so next note adds to sequence correctly
+        
+        // Hide the submit button since we no longer have enough notes
+        this.submitSequenceButton.style.display = 'none';
+    }
+    
+    // Change to a specific level
+    changeLevel(levelString) {
+        // Parse the level string (format: "majorLevel-minorLevel")
+        const [majorLevel, minorLevel] = levelString.split('-').map(num => parseInt(num));
+        
+        // Validate the levels
+        if (majorLevel >= 1 && majorLevel <= 12 && minorLevel >= 1 && minorLevel <= 3) {
+            // Update the levels
+            this.majorLevel = majorLevel;
+            this.minorLevel = minorLevel;
+            
+            // Update the level display
+            this.updateLevelDisplay();
+            
+            // Generate a new sequence for this level
+            this.generateNewSequence();
+            
+            // Update empty boxes in ear training mode if it's enabled
+            if (this.isEarTrainingMode) {
+                this.createEmptyNoteBoxes();
+            }
+            
+            // Show a feedback message
+            this.showFeedback(`Changed to Level ${majorLevel}-${minorLevel}`, 'info');
+            setTimeout(() => this.hideFeedback(), 1500);
+        }
     }
 }
 
