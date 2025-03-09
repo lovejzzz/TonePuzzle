@@ -1233,8 +1233,24 @@ body.dark-theme .feedback-message.info {
     100% { opacity: 1; }
 }
 
+/* Consistent styling for piano key presses */
 .piano-key.playing {
-    animation: keyBlink 0.5s ease;
+    /* Match the active state styling instead of using animation */
+    background: linear-gradient(to bottom, #e0e0e0 0%, #d0d0d0 100%) !important;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+    transform: translateY(1px);
+}
+
+/* Dark theme playing white key */
+body.dark-theme .white-key.playing {
+    background: linear-gradient(to bottom, #d32f2f 0%, #b71c1c 100%) !important;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2) !important;
+}
+
+/* Dark theme playing black key */
+body.dark-theme .black-key.playing {
+    background: linear-gradient(to bottom, #000000 0%, #1a1a1a 100%) !important;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3) !important;
 }
 
 /* Next button */

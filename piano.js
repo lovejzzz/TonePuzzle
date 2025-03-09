@@ -225,8 +225,8 @@ class Piano {
     }
     
     handleKeyPress(key) {
-        if (!key.classList.contains('active')) {
-            key.classList.add('active');
+        if (!key.classList.contains('playing')) {
+            key.classList.add('playing');
             
             // Get the note directly from the dataset - ensure it's a clean value
             // This is the root source of the note data
@@ -244,8 +244,8 @@ class Piano {
     }
     
     handleKeyRelease(key) {
-        if (key.classList.contains('active')) {
-            key.classList.remove('active');
+        if (key.classList.contains('playing')) {
+            key.classList.remove('playing');
             const note = key.dataset.note;
             this.stopNote(note);
         }

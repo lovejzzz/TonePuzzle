@@ -950,8 +950,8 @@ class SequencePuzzle {
         const keyElement = keyElements.find(key => key.dataset.note === cleanNote);
         
         if (keyElement) {
-            // Add playing class for visual feedback
-            keyElement.classList.add('playing', 'active');
+            // Add only playing class for consistent visual feedback
+            keyElement.classList.add('playing');
             
             // Play the note
             window.piano.playNote(cleanNote);
@@ -959,7 +959,7 @@ class SequencePuzzle {
             // Remove the visual feedback after a short delay
             setTimeout(() => {
                 window.piano.stopNote(cleanNote);
-                keyElement.classList.remove('playing', 'active');
+                keyElement.classList.remove('playing');
             }, 300); // Shorter duration for single note playback
         }
     }
@@ -1029,9 +1029,9 @@ class SequencePuzzle {
             const keyElement = keyElements.find(key => key.dataset.note === note);
             
             if (keyElement) {
-                // Add playing class for visual feedback only if not in ear training mode or if explicitly requested
+                // Add only playing class for consistent visual feedback
                 if (showKeyPress) {
-                    keyElement.classList.add('playing', 'active');
+                    keyElement.classList.add('playing');
                 }
                 
                 // Play the note
@@ -1042,7 +1042,7 @@ class SequencePuzzle {
                     // Stop the note after the delay to prevent overlap
                     window.piano.stopNote(note);
                     if (showKeyPress) {
-                        keyElement.classList.remove('playing', 'active');
+                        keyElement.classList.remove('playing');
                     }
                     resolve();
                 }, this.playbackSpeed);
