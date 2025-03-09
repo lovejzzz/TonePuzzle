@@ -95,10 +95,15 @@ You can play the game online at: [lovejzzz.github.io/TonePuzzle/](https://lovejz
 - **Note Visibility**: Optimized note label display in dark mode for better readability.
 - **Interactive Elements**: Improved styling of buttons and controls with consistent hover effects and transitions.
 - **Feedback System**: Enhanced visual feedback for level completion and correct/incorrect answers.
+- **Enhanced Tutorial Page**: Redesigned the tutorial page with an interactive piano keyboard demonstration and comprehensive interval explanations.
+- **Mode-Adaptive Styling**: Piano demo elements in the tutorial page now adapt their styling to match the current mode (Visual or Ear).
 
 ### Mobile Responsiveness Improvements (March 2025)
 
 - **Enhanced iPhone and iPad Support**: Optimized the game for mobile Apple devices with responsive layouts.
+- **iOS Audio Compatibility**: Improved audio handling for iOS Safari browsers to ensure proper sound playback on Apple devices.
+- **Tutorial Page iOS Support**: Added iOS-specific optimizations to the tutorial page for better compatibility with Safari on iPhone and iPad.
+- **Touch-Friendly Controls**: Ensured all interactive elements are properly sized and spaced for touch input on mobile devices.
 - **Orientation Detection**: Added automatic layout adjustments when switching between portrait and landscape orientations.
 - **Touch-Optimized Controls**: Increased button and control sizes to meet Apple's recommended 44px minimum touch target size.
 - **Improved Touch Feedback**: Enhanced visual feedback when interacting with piano keys and buttons on touch devices.

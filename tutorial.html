@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Tone Puzzle - Tutorial</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .tutorial-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        
+        .tutorial-section {
+            margin-bottom: 40px;
+            background-color: #fff;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+        
+        body.dark-theme .tutorial-section {
+            background-color: #2d2d2d;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+        
+        .tutorial-section h2 {
+            color: #4361ee;
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+        }
+        
+        /* Piano Keyboard Demonstration Styles */
+        .demo-container {
+            margin: 20px 0;
+            padding: 20px;
+            background-color: #343a40;
+            border-radius: 12px;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+            color: #fff;
+        }
+        
+        body.dark-theme .demo-container {
+            background-color: #1a1a1a;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
+        }
+        
+        .demo-keyboard-container {
+            margin: 20px 0;
+        }
+        
+        .demo-keyboard {
+            position: relative;
+            height: 150px;
+            margin: 0 auto;
+            width: 100%;
+            max-width: 600px;
+            background: linear-gradient(to bottom, #1a252f, #2c3e50);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        
+        .demo-white-key {
+            position: absolute;
+            width: 12.5%; /* 8 white keys in one octave = 12.5% each */
+            height: 100%;
+            background: linear-gradient(to bottom, #ffffff 0%, #f0f0f0 100%);
+            border: 1px solid #ddd;
+            border-radius: 0 0 5px 5px;
+            z-index: 1;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: background 0.3s ease, transform 0.2s ease;
+        }
+        
+        /* White key positions - adjusted to fill the space */
+        #demo-key0 { left: 0; }
+        #demo-key2 { left: 12.5%; }
+        #demo-key4 { left: 25%; }
+        #demo-key5 { left: 37.5%; }
+        #demo-key7 { left: 50%; }
+        #demo-key9 { left: 62.5%; }
+        #demo-key11 { left: 75%; }
+        #demo-key12 { left: 87.5%; }
+        
+        body.dark-theme .demo-white-key {
+            background: linear-gradient(to bottom, #ff5252 0%, #d32f2f 100%);
+            border: 1px solid #b71c1c;
+        }
+        
+        .demo-black-key {
+            position: absolute;
+            width: 8%;
+            height: 60%;
+            background: linear-gradient(to bottom, #333333 0%, #000000 100%);
+            z-index: 2;
+            border-radius: 0 0 5px 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            transition: transform 0.2s ease;
+        }
+        
+        /* Black key positions - perfectly aligned with white keys */
+        #demo-key1 { left: 8.5%; }   /* C#3 */
+        #demo-key3 { left: 21%; }    /* D#3 */
+        #demo-key6 { left: 46%; }    /* F#3 */
+        #demo-key8 { left: 58.5%; }  /* G#3 */
+        #demo-key10 { left: 71%; }   /* A#3 */
+        
+        .demo-white-key.active, .demo-black-key.active {
+            transform: translateY(3px);
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+        }
+        
+        .demo-white-key.active {
+            background: #e3f2fd;
+        }
+        
+        body.dark-theme .demo-white-key.active {
+            background: #ff8a80;
+        }
+        
+        .demo-black-key.active {
+            background: #546e7a;
+        }
+        
+        .demo-controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        
+        .demo-button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+        
+        .demo-button:hover {
+            background-color: #45a049;
+        }
+        
+        .demo-button.dark-theme-button {
+            background-color: #ff5252;
+            color: white;
+        }
+        
+        .demo-button.dark-theme-button:hover {
+            background-color: #ff7b7b;
+        }
+        
+        .demo-select {
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            font-size: 16px;
+            background-color: #fff;
+        }
+        
+        .demo-select.dark-theme-select {
+            background-color: #2a2a2a;
+            color: #e0e0e0;
+            border-color: #444;
+        }
+        
+        .demo-info {
+            text-align: center;
+            margin: 15px 0;
+            font-size: 16px;
+        }
+        
+        body.dark-theme .tutorial-section h2 {
+            color: #ff5252;
+        }
+        
+        .tutorial-section p {
+            margin-bottom: 16px;
+            line-height: 1.7;
+        }
+        
+        .tutorial-section ul {
+            margin-bottom: 16px;
+            padding-left: 24px;
+        }
+        
+        .tutorial-section li {
+            margin-bottom: 8px;
+            line-height: 1.7;
+        }
+        
+        .back-button {
+            display: inline-block;
+            background-color: #4361ee;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            margin-top: 20px;
+        }
+        
+        .back-button:hover {
+            background-color: #3a56d4;
+            transform: translateY(-2px);
+        }
+        
+        body.dark-theme .back-button {
+            background-color: #ff5252;
+        }
+        
+        body.dark-theme .back-button:hover {
+            background-color: #d32f2f;
+        }
+        
+        .interval-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        
+        .interval-table th, .interval-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        body.dark-theme .interval-table th, 
+        body.dark-theme .interval-table td {
+            border-bottom: 1px solid #444;
+        }
+        
+        .interval-table th {
+            background-color: rgba(67, 97, 238, 0.1);
+            color: #4361ee;
+            font-weight: 600;
+        }
+        
+        body.dark-theme .interval-table th {
+            background-color: rgba(255, 82, 82, 0.1);
+            color: #ff5252;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-content">
+                <div class="title-container">
+                    <h1 id="title-link" style="cursor: pointer;"><span class="title-tone">Tone</span><span class="title-puzzle">Puzzle</span></h1>
+
+                </div>
+                <div class="mode-toggle header-mode-toggle">
+                    <span>Visual Mode</span>
+                    <label class="switch">
+                        <input type="checkbox" id="mode-switch">
+                        <span class="slider round"></span>
+                    </label>
+                    <span>Ear Mode</span>
+                </div>
+            </div>
+        </header>
+        
+        <div class="tutorial-container">
+            <div class="tutorial-section visual-mode-content">
+                <h2>How to Play Tone Puzzle - Visual Mode</h2>
+                <p>Tone Puzzle is a music training game designed to help you develop your understanding of musical intervals. In Visual Mode, you can see the original sequence and need to recreate it by clicking the piano keys.</p>
+                
+                <h3>Visual Mode Gameplay</h3>
+                <ol>
+                    <li>Click the <strong>Start Game</strong> button to begin.</li>
+                    <li>Look at the original sequence displayed at the top of the game area.</li>
+                    <li>Use the piano keyboard to recreate the same sequence of notes.</li>
+                    <li>The <strong>Submit</strong> button will appear when you've entered the correct number of notes.</li>
+                    <li>Click <strong>Submit</strong> to check your sequence.</li>
+                    <li>If correct, you'll automatically progress to the next level.</li>
+                    <li>If incorrect, you'll restart from the beginning of your current major level (e.g., if you're on level 3-2 and make a mistake, you'll restart at level 3-1).</li>
+                </ol>
+                
+                <p>Visual Mode is great for beginners and helps you understand the relationship between notes visually before training your ear.</p>
+                
+
+                
+                <p>You can select different levels by clicking on the level display in the top right corner. Each level increases in difficulty, with longer sequences and more complex intervals.</p>
+            </div>
+            
+            <div class="tutorial-section ear-mode-content" style="display: none;">
+                <h2>How to Play Tone Puzzle - Ear Mode</h2>
+                <p>Tone Puzzle is a music training game designed to help you develop your ear for musical intervals. In Ear Mode, you can only hear the sequence and need to recreate it by ear, testing your aural skills.</p>
+                
+                <h3>Ear Mode Gameplay</h3>
+                <ol>
+                    <li>Click the <strong>Start Game</strong> button to begin.</li>
+                    <li>Listen carefully to the sequence of notes played.</li>
+                    <li>Empty boxes will show how many notes you need to enter.</li>
+                    <li>Use the piano keyboard to recreate the sequence you heard.</li>
+                    <li>The <strong>Submit</strong> button will appear when you've entered the correct number of notes.</li>
+                    <li>Click <strong>Submit</strong> to check your sequence.</li>
+                    <li>If correct, you'll automatically progress to the next level.</li>
+                    <li>If incorrect, you'll restart from the beginning of your current major level (e.g., if you're on level 3-2 and make a mistake, you'll restart at level 3-1).</li>
+                </ol>
+                
+                <p>Ear Mode challenges your aural skills and helps you develop the ability to recognize intervals by ear - an essential skill for musicians.</p>
+                
+                <p>You can select different levels by clicking on the level display in the top right corner. Each level increases in difficulty, with longer sequences and more complex intervals.</p>
+            </div>
+            
+            <div class="tutorial-section">
+                <h2>Understanding Intervals</h2>
+                <p>Tone Puzzle helps you develop a deeper understanding of musical intervals - the distance between two pitches. Recognizing intervals is a fundamental skill for musicians that improves ear training, sight-reading, and musical comprehension.</p>
+                
+                <div class="demo-container">
+                    <div class="demo-keyboard-container">
+                        <div class="demo-keyboard">
+                            <!-- White keys -->
+                            <div class="demo-white-key" id="demo-key0" data-note="C3"></div>
+                            <div class="demo-white-key" id="demo-key2" data-note="D3"></div>
+                            <div class="demo-white-key" id="demo-key4" data-note="E3"></div>
+                            <div class="demo-white-key" id="demo-key5" data-note="F3"></div>
+                            <div class="demo-white-key" id="demo-key7" data-note="G3"></div>
+                            <div class="demo-white-key" id="demo-key9" data-note="A3"></div>
+                            <div class="demo-white-key" id="demo-key11" data-note="B3"></div>
+                            <div class="demo-white-key" id="demo-key12" data-note="C4"></div>
+                            
+                            <!-- Black keys -->
+                            <div class="demo-black-key" id="demo-key1" data-note="C#3"></div>
+                            <div class="demo-black-key" id="demo-key3" data-note="D#3"></div>
+                            <div class="demo-black-key" id="demo-key6" data-note="F#3"></div>
+                            <div class="demo-black-key" id="demo-key8" data-note="G#3"></div>
+                            <div class="demo-black-key" id="demo-key10" data-note="A#3"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="demo-controls">
+                        <button id="demo-play-button" class="demo-button">Play Interval Demo</button>
+                        <select id="interval-selector" class="demo-select">
+                            <option value="0">Unison (0 semitones)</option>
+                            <option value="1">Minor 2nd (1 semitone)</option>
+                            <option value="2" selected>Major 2nd (2 semitones)</option>
+                            <option value="3">Minor 3rd (3 semitones)</option>
+                            <option value="4">Major 3rd (4 semitones)</option>
+                            <option value="5">Perfect 4th (5 semitones)</option>
+                            <option value="6">Tritone (6 semitones)</option>
+                            <option value="7">Perfect 5th (7 semitones)</option>
+                            <option value="8">Minor 6th (8 semitones)</option>
+                            <option value="9">Major 6th (9 semitones)</option>
+                            <option value="10">Minor 7th (10 semitones)</option>
+                            <option value="11">Major 7th (11 semitones)</option>
+                            <option value="12">Octave (12 semitones)</option>
+                        </select>
+                    </div>
+                    
+
+                </div>
+                
+                <h3>Common Intervals and Their Characteristics</h3>
+                <table class="interval-table">
+                    <tr>
+                        <th>Interval</th>
+                        <th>Semitones</th>
+                        <th>Sound Character</th>
+                        <th>Example Song</th>
+                    </tr>
+                    <tr>
+                        <td>Unison</td>
+                        <td>0</td>
+                        <td>Same pitch</td>
+                        <td>Any repeated note</td>
+                    </tr>
+                    <tr>
+                        <td>Minor 2nd</td>
+                        <td>1</td>
+                        <td>Dissonant, tense</td>
+                        <td>Jaws Theme</td>
+                    </tr>
+                    <tr>
+                        <td>Major 2nd</td>
+                        <td>2</td>
+                        <td>Whole step, open</td>
+                        <td>Happy Birthday (first two notes)</td>
+                    </tr>
+                    <tr>
+                        <td>Minor 3rd</td>
+                        <td>3</td>
+                        <td>Melancholic</td>
+                        <td>Greensleeves</td>
+                    </tr>
+                    <tr>
+                        <td>Major 3rd</td>
+                        <td>4</td>
+                        <td>Bright, happy</td>
+                        <td>When the Saints Go Marching In</td>
+                    </tr>
+                    <tr>
+                        <td>Perfect 4th</td>
+                        <td>5</td>
+                        <td>Strong, stable</td>
+                        <td>Here Comes the Bride</td>
+                    </tr>
+                    <tr>
+                        <td>Tritone</td>
+                        <td>6</td>
+                        <td>Tense, unstable</td>
+                        <td>The Simpsons Theme</td>
+                    </tr>
+                    <tr>
+                        <td>Perfect 5th</td>
+                        <td>7</td>
+                        <td>Open, powerful</td>
+                        <td>Star Wars Theme</td>
+                    </tr>
+                    <tr>
+                        <td>Minor 6th</td>
+                        <td>8</td>
+                        <td>Nostalgic</td>
+                        <td>Love Story Theme</td>
+                    </tr>
+                    <tr>
+                        <td>Major 6th</td>
+                        <td>9</td>
+                        <td>Cheerful, bright</td>
+                        <td>My Bonnie Lies Over the Ocean</td>
+                    </tr>
+                    <tr>
+                        <td>Minor 7th</td>
+                        <td>10</td>
+                        <td>Melancholic, yearning</td>
+                        <td>Star Trek Theme</td>
+                    </tr>
+                    <tr>
+                        <td>Major 7th</td>
+                        <td>11</td>
+                        <td>Tense, leading</td>
+                        <td>Take On Me</td>
+                    </tr>
+                    <tr>
+                        <td>Octave</td>
+                        <td>12</td>
+                        <td>Complete, same note higher</td>
+                        <td>Somewhere Over the Rainbow</td>
+                    </tr>
+                </table>
+                
+                <h3>Benefits of Interval Training</h3>
+                <ul>
+                    <li><strong>Improved Ear Training:</strong> Recognizing intervals helps you identify notes by ear.</li>
+                    <li><strong>Better Sight-Reading:</strong> Understanding intervals makes reading sheet music more intuitive.</li>
+                    <li><strong>Enhanced Improvisation:</strong> Knowing how intervals sound helps you create melodies on the fly.</li>
+                    <li><strong>Deeper Musical Understanding:</strong> Intervals are the building blocks of chords and scales.</li>
+                </ul>
+                
+                <p>As you progress through the levels of Tone Puzzle, you'll encounter more complex sequences with various intervals. This gradual progression helps build your intervalic recognition skills in a fun and engaging way.</p>
+            </div>
+            
+            <div class="button-container" style="text-align: center; margin-top: 30px;">
+                <button id="start-game-button" class="back-button">Start Game</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Get DOM elements
+        const modeSwitch = document.getElementById('mode-switch');
+        const visualModeContent = document.querySelector('.visual-mode-content');
+        const earModeContent = document.querySelector('.ear-mode-content');
+        const startGameButton = document.getElementById('start-game-button');
+        const tutorialIcon = document.getElementById('tutorial-icon');
+        const titleLink = document.getElementById('title-link');
+        
+        // Function to toggle mode content
+        function toggleModeContent() {
+            const isEarMode = modeSwitch.checked;
+            
+            // Toggle dark theme
+            document.body.classList.toggle('dark-theme', isEarMode);
+            
+            // Toggle content visibility
+            visualModeContent.style.display = isEarMode ? 'none' : 'block';
+            earModeContent.style.display = isEarMode ? 'block' : 'none';
+            
+            // Update tutorial icon href to include current mode
+            if (tutorialIcon) {
+                tutorialIcon.href = `tutorial.html?mode=${isEarMode ? 'ear' : 'visual'}`;
+            }
+            
+            // Apply Ear Mode styles to piano demo elements
+            const demoPlayButton = document.getElementById('demo-play-button');
+            const intervalSelector = document.getElementById('interval-selector');
+            
+            if (demoPlayButton) {
+                if (isEarMode) {
+                    demoPlayButton.classList.add('dark-theme-button');
+                } else {
+                    demoPlayButton.classList.remove('dark-theme-button');
+                }
+            }
+            
+            if (intervalSelector) {
+                if (isEarMode) {
+                    intervalSelector.classList.add('dark-theme-select');
+                } else {
+                    intervalSelector.classList.remove('dark-theme-select');
+                }
+            }
+        }
+        
+        // Toggle mode when the switch is clicked
+        modeSwitch.addEventListener('change', toggleModeContent);
+        
+        // Start game button click handler
+        startGameButton.addEventListener('click', function() {
+            // Get the current mode (checked = ear mode, unchecked = visual mode)
+            const isEarMode = modeSwitch.checked;
+            
+            // Redirect to index.html with mode parameter
+            window.location.href = `index.html?mode=${isEarMode ? 'ear' : 'visual'}`;
+        });
+        
+        // Make the title clickable to go back to index page with current mode
+        titleLink.addEventListener('click', function() {
+            const isEarMode = modeSwitch.checked;
+            window.location.href = `index.html?mode=${isEarMode ? 'ear' : 'visual'}`;
+        });
+        
+        // Piano Keyboard Demonstration
+        const demoPlayButton = document.getElementById('demo-play-button');
+        const intervalSelector = document.getElementById('interval-selector');
+        const intervalInfo = document.getElementById('interval-info');
+        const demoWhiteKeys = document.querySelectorAll('.demo-white-key');
+        const demoBlackKeys = document.querySelectorAll('.demo-black-key');
+        const demoKeys = [...demoWhiteKeys, ...demoBlackKeys];
+        
+        // Audio context for playing notes
+        let audioContext;
+        
+        // Initialize audio context on user interaction
+        function initAudioContext() {
+            if (!audioContext) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                
+                // iOS requires a touch or click event to unlock audio
+                // This is handled when a user clicks a button, but we'll add a safety measure
+                if (audioContext.state === 'suspended') {
+                    const resumeAudio = function() {
+                        audioContext.resume();
+                        
+                        // Remove event listeners once audio is resumed
+                        document.removeEventListener('touchstart', resumeAudio);
+                        document.removeEventListener('touchend', resumeAudio);
+                        document.removeEventListener('click', resumeAudio);
+                    };
+                    
+                    document.addEventListener('touchstart', resumeAudio);
+                    document.addEventListener('touchend', resumeAudio);
+                    document.addEventListener('click', resumeAudio);
+                }
+            }
+        }
+        
+        // Play a note with the given frequency
+        function playNote(frequency, duration = 0.5) {
+            initAudioContext();
+            
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.type = 'sine';
+            oscillator.frequency.value = frequency;
+            
+            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration);
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            oscillator.start();
+            oscillator.stop(audioContext.currentTime + duration);
+            
+            return { oscillator, gainNode };
+        }
+        
+        // Get frequency for a note
+        function getFrequency(note) {
+            // Base frequencies for each octave
+            const baseFrequencies = {
+                'C3': 130.81,
+                'C4': 261.63,
+                'C5': 523.25
+            };
+            
+            // Extract the note name and octave
+            const noteName = note.substring(0, note.length - 1);
+            const octave = note.substring(note.length - 1);
+            
+            // Get the base frequency for the octave
+            let baseFrequency;
+            if (octave === '3') {
+                baseFrequency = baseFrequencies['C3'];
+            } else if (octave === '4') {
+                baseFrequency = baseFrequencies['C4'];
+            } else if (octave === '5') {
+                baseFrequency = baseFrequencies['C5'];
+            } else {
+                baseFrequency = baseFrequencies['C4']; // Default to C4
+            }
+            
+            // Calculate semitones from the base note of the octave
+            const noteMap = {
+                'C': 0,
+                'C#': 1,
+                'D': 2,
+                'D#': 3,
+                'E': 4,
+                'F': 5,
+                'F#': 6,
+                'G': 7,
+                'G#': 8,
+                'A': 9,
+                'A#': 10,
+                'B': 11
+            };
+            
+            const semitones = noteMap[noteName];
+            return baseFrequency * Math.pow(2, semitones / 12);
+        }
+        
+        // Activate a key visually and play its note
+        function activateKey(key) {
+            key.classList.add('active');
+            const noteFreq = getFrequency(key.dataset.note);
+            playNote(noteFreq);
+            setTimeout(() => {
+                key.classList.remove('active');
+            }, 500);
+        }
+        
+        // Play interval demonstration
+        function playIntervalDemo() {
+            const interval = parseInt(intervalSelector.value);
+            const baseKey = document.getElementById('demo-key0'); // C3 key
+            const baseNote = baseKey.dataset.note;
+            
+            // Calculate the target note based on the interval
+            const targetNote = getIntervalNote(baseNote, interval);
+            
+            // Find the target key based on the calculated note
+            let targetKey = null;
+            for (const key of demoKeys) {
+                if (key.dataset.note === targetNote) {
+                    targetKey = key;
+                    break;
+                }
+            }
+            
+            // If target key is not found or is out of our keyboard range
+            if (!targetKey) {
+                // Just play and animate the base note if target is out of range
+                activateKey(baseKey);
+                return;
+            }
+            
+            // Animate and play the base note
+            activateKey(baseKey);
+            
+            // After a delay, animate and play the target note
+            setTimeout(() => {
+                activateKey(targetKey);
+            }, 800);
+            
+            // After another delay, play both notes together
+            setTimeout(() => {
+                activateKey(baseKey);
+                activateKey(targetKey);
+            }, 1600);
+        }
+        
+        // Get note name based on interval from base note
+        function getIntervalNote(baseNote, interval) {
+            // Extract the note name and octave
+            const noteName = baseNote.substring(0, baseNote.length - 1);
+            const octave = baseNote.substring(baseNote.length - 1);
+            
+            const noteOrder = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+            const baseIndex = noteOrder.indexOf(noteName);
+            
+            // Calculate the target index and handle octave changes
+            let targetIndex = (baseIndex + interval) % 12;
+            let targetOctave = parseInt(octave);
+            
+            // If we cross an octave boundary
+            if (baseIndex + interval >= 12) {
+                targetOctave++;
+            }
+            
+            return noteOrder[targetIndex] + targetOctave;
+        }
+        
+        // Get interval name based on semitones
+        function getIntervalName(semitones) {
+            const intervalNames = {
+                0: 'Unison',
+                1: 'Minor 2nd',
+                2: 'Major 2nd',
+                3: 'Minor 3rd',
+                4: 'Major 3rd',
+                5: 'Perfect 4th',
+                6: 'Tritone',
+                7: 'Perfect 5th',
+                8: 'Minor 6th',
+                9: 'Major 6th',
+                10: 'Minor 7th',
+                11: 'Major 7th',
+                12: 'Octave'
+            };
+            return intervalNames[semitones] || `${semitones} semitones`;
+        }
+        
+        // Add event listener to play button
+        demoPlayButton.addEventListener('click', playIntervalDemo);
+        
+        // Add event listeners to piano keys to make them clickable
+        demoKeys.forEach(key => {
+            key.addEventListener('click', function() {
+                activateKey(this);
+            });
+        });
+        
+        // Add event listener to interval selector
+        intervalSelector.addEventListener('change', function() {
+            // No need to update text, just store the selected interval
+        });
+        
+        // Initialize the page based on URL parameters or default to visual mode
+        window.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const mode = urlParams.get('mode');
+            
+            // Set the mode switch based on URL parameter
+            if (mode === 'ear') {
+                modeSwitch.checked = true;
+            } else {
+                modeSwitch.checked = false;
+            }
+            
+            // Toggle content based on the current mode
+            toggleModeContent();
+        });
+    </script>
+</body>
+</html>
