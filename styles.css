@@ -36,6 +36,38 @@ header {
     gap: 16px;
 }
 
+.title-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.tutorial-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background-color: transparent;
+    color: #4361ee;
+    transition: all 0.2s ease;
+}
+
+.tutorial-icon:hover {
+    background-color: rgba(67, 97, 238, 0.2);
+    transform: translateY(-2px);
+}
+
+body.dark-theme .tutorial-icon {
+    background-color: rgba(255, 82, 82, 0.1);
+    color: #ff5252;
+}
+
+body.dark-theme .tutorial-icon:hover {
+    background-color: rgba(255, 82, 82, 0.2);
+}
+
 #start-game {
     background-color: #4361ee;
     color: white;
@@ -932,12 +964,18 @@ body.dark-theme .header-mode-toggle span {
     display: inline-block;
     width: 52px;
     height: 28px;
+    flex-shrink: 0; /* Prevent the switch from stretching */
+    -webkit-appearance: none; /* Fix for iOS devices */
+    appearance: none; /* Standard property for compatibility */
 }
 
 .switch input {
     opacity: 0;
     width: 0;
     height: 0;
+    -webkit-appearance: none;
+    appearance: none;
+    position: absolute;
 }
 
 .slider {
@@ -950,6 +988,8 @@ body.dark-theme .header-mode-toggle span {
     background-color: #dee2e6;
     transition: .3s;
     box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+    -webkit-transform: translateZ(0); /* Fix for iOS rendering */
+    transform: translateZ(0);
 }
 
 .slider:before {

@@ -468,9 +468,11 @@ class SequencePuzzle {
             return; // Ignore notes outside the available range
         }
         
-        // Don't add the starting note to the sequence when clicked
-        if (cleanNote === this.startNote) {
-            console.log(`[GAME] Starting note ${cleanNote} clicked - not adding to sequence`);
+        // Don't add the starting note to the sequence when clicked in two cases:
+        // 1. If the user hasn't started entering notes yet
+        // 2. If the user has started but hasn't entered any notes yet (userSequence is empty)
+        if (cleanNote === this.startNote && (!this.hasStartedSequence || this.userSequence.length === 0)) {
+            console.log(`[GAME] Starting note ${cleanNote} clicked as first note - not adding to sequence`);
             // Play the note but don't add it to the sequence
             this.playNoteWithVisualFeedback(cleanNote);
             return;
@@ -657,16 +659,16 @@ class SequencePuzzle {
                 });
             }, 1000);
         } else {
-            // Game over - reset to level 1-1
-            this.majorLevel = 1;
+            // Reset to the beginning of the current major level
+            const currentMajor = this.majorLevel;
             this.minorLevel = 1;
             this.updateLevelDisplay();
-            this.showFeedback("Game Over! Starting over from level 1-1", "error");
+            this.showFeedback(`Incorrect! Starting over from level ${currentMajor}-1`, "error");
             
             setTimeout(() => {
                 this.userSequence = [];
                 this.hasStartedSequence = false;
-                // Generate a new sequence for level 1-1 instead of just displaying the existing sequence
+                // Generate a new sequence for the current major level instead of just displaying the existing sequence
                 this.generateNewSequence();
                 this.hideFeedback();
             }, 2000);

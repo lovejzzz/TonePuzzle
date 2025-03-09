@@ -10,7 +10,16 @@
     <div class="container">
         <header>
             <div class="header-content">
-                <h1><span class="title-tone">Tone</span><span class="title-puzzle">Puzzle</span></h1>
+                <div class="title-container">
+                    <h1><span class="title-tone">Tone</span><span class="title-puzzle">Puzzle</span></h1>
+                    <a href="tutorial.html" id="tutorial-link" class="tutorial-icon" aria-label="Tutorial" style="transform: scale(0.5); transform-origin: left center;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+                            <line x1="12" y1="17" x2="12" y2="17"></line>
+                        </svg>
+                    </a>
+                </div>
                 <button id="start-game">Start Game</button>
                 
                 <div class="mode-toggle header-mode-toggle">
@@ -24,7 +33,7 @@
                 
                 <div class="score-container" id="level-display">
                     <span>Level: </span>
-                    <span id="score">0</span>
+                    <span id="score">1-1</span>
                     <select id="level-selector" class="hidden-selector">
                         <option value="1-1">1-1</option>
                         <option value="1-2">1-2</option>
@@ -142,5 +151,47 @@
 
     <script src="piano.js"></script>
     <script src="game.js"></script>
+    <script>
+        // Handle mode parameter from tutorial page
+        window.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const mode = urlParams.get('mode');
+            const modeSwitch = document.getElementById('mode-switch');
+            const tutorialLink = document.getElementById('tutorial-link');
+            
+            // Update tutorial link with current mode
+            function updateTutorialLink() {
+                const isEarMode = modeSwitch.checked;
+                tutorialLink.href = `tutorial.html?mode=${isEarMode ? 'ear' : 'visual'}`;
+            }
+            
+            // Add event listener to mode switch to update tutorial link
+            modeSwitch.addEventListener('change', updateTutorialLink);
+            
+            // Initialize based on URL parameters
+            if (mode === 'ear') {
+                // Set to ear mode
+                modeSwitch.checked = true;
+                // Apply dark theme
+                document.body.classList.add('dark-theme');
+                // Auto-start the game if coming from tutorial
+                setTimeout(() => {
+                    document.getElementById('start-game').click();
+                }, 500);
+            } else if (mode === 'visual') {
+                // Set to visual mode
+                modeSwitch.checked = false;
+                // Remove dark theme
+                document.body.classList.remove('dark-theme');
+                // Auto-start the game if coming from tutorial
+                setTimeout(() => {
+                    document.getElementById('start-game').click();
+                }, 500);
+            }
+            
+            // Initialize tutorial link with current mode
+            updateTutorialLink();
+        });
+    </script>
 </body>
 </html> 
