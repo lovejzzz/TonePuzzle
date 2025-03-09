@@ -36,8 +36,7 @@ class SequencePuzzle {
         this.clearUserSequenceButton = document.getElementById('clear-user-sequence');
         this.levelSelector = document.getElementById('level-selector');
         
-        // Update score element to show level instead
-        this.scoreElement.innerHTML = '<span id="level-display">1-1</span>';
+        // The level display is now the container for the level selector
         this.levelDisplayElement = document.getElementById('level-display');
         
         // Initially hide the submit button until the user has entered enough notes
@@ -158,10 +157,16 @@ class SequencePuzzle {
     }
     
     generateNewSequence() {
-        // Hide next button if it's visible
+        // Hide next button if it's visible (no longer needed as we auto-advance)
         this.nextButton.style.display = 'none';
         this.hideFeedback();
         this.hasStartedSequence = false;
+        
+        // Reset submit button to original state and hide it until user enters correct number of notes
+        this.submitSequenceButton.textContent = 'Submit';
+        this.submitSequenceButton.disabled = false;
+        this.submitSequenceButton.style.backgroundColor = '';
+        this.submitSequenceButton.style.display = 'none';
         
         // Remove any previous starting note indicator
         this.clearStartingNoteIndicator();
@@ -591,15 +596,19 @@ class SequencePuzzle {
                 this.majorLevel = 12;
                 this.minorLevel = 3;
                 
-                // Show play again button
+                // Change submit button to show 'Playing'
+                this.submitSequenceButton.textContent = 'Playing...';
+                this.submitSequenceButton.disabled = true;
+                this.submitSequenceButton.style.backgroundColor = '#aaaaaa';
+                
+                // Play both sequences back-to-back and then restart the game
                 setTimeout(() => {
-                    this.nextButton.textContent = "Play Again";
-                    this.nextButton.style.display = 'block';
-                    this.nextButton.onclick = () => this.startGame();
-                    
-                    // Position the next button below the feedback message
-                    const feedbackRect = this.feedbackElement.getBoundingClientRect();
-                    this.nextButton.style.top = (feedbackRect.bottom + 10) + 'px';
+                    this.playBothSequences().then(() => {
+                        // Automatically restart the game after a short delay
+                        setTimeout(() => {
+                            this.startGame();
+                        }, 1500);
+                    });
                 }, 1000);
                 
                 return;
@@ -633,15 +642,18 @@ class SequencePuzzle {
             // Speed up playback for the demonstration
             this.playbackSpeed = 250; // Twice as fast
             
+            // Change submit button to show 'Playing'
+            this.submitSequenceButton.textContent = 'Playing...';
+            this.submitSequenceButton.disabled = true;
+            this.submitSequenceButton.style.backgroundColor = '#aaaaaa';
+            
             // Play both sequences back-to-back
             setTimeout(() => {
                 this.playBothSequences().then(() => {
-                    // Show the next button instead of automatically generating a new sequence
-                    this.nextButton.style.display = 'block';
-                    
-                    // Position the next button below the feedback message
-                    const feedbackRect = this.feedbackElement.getBoundingClientRect();
-                    this.nextButton.style.top = (feedbackRect.bottom + 10) + 'px';
+                    // Automatically generate a new sequence instead of showing the next button
+                    setTimeout(() => {
+                        this.generateNewSequence();
+                    }, 500);
                 });
             }, 1000);
         } else {
@@ -803,7 +815,8 @@ class SequencePuzzle {
     }
 
     updateLevelDisplay() {
-        this.levelDisplayElement.textContent = `${this.majorLevel}-${this.minorLevel}`;
+        // Update the score element to show the current level
+        document.getElementById('score').textContent = `${this.majorLevel}-${this.minorLevel}`;
         // Also update the level selector
         this.updateLevelSelector();
     }

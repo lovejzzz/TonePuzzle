@@ -193,24 +193,8 @@ class Piano {
             });
         });
         
-        // Set up velocity slider
-        const velocitySlider = document.getElementById('velocity-slider');
-        const velocityValue = document.getElementById('velocity-value');
-        
-        if (velocitySlider && velocityValue) {
-            // Update slider to use 0-1 range
-            velocitySlider.min = 0;
-            velocitySlider.max = 1;
-            velocitySlider.step = 0.05;
-            velocitySlider.value = this.velocity;
-            velocityValue.textContent = this.velocity;
-            
-            velocitySlider.addEventListener('input', () => {
-                const value = parseFloat(velocitySlider.value);
-                velocityValue.textContent = value.toFixed(2);
-                this.setVelocity(value);
-            });
-        }
+        // Set a default velocity (0.7) since we've removed the slider
+        this.setVelocity(0.7);
         
         // Add keyboard event listeners for computer keyboard support
         document.addEventListener('keydown', (e) => {
