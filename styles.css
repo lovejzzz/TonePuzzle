@@ -989,17 +989,95 @@ input:checked + .slider:before {
         height: 150px; /* Smaller piano height for mobile */
     }
     
+    /* Responsive piano keys that adapt to screen width */
     .white-key {
-        width: 11%; /* Narrower keys for mobile */
+        width: calc(100% / 15); /* Dynamically calculate width based on 15 white keys */
     }
     
     .black-key {
-        width: 6%; /* Narrower black keys */
+        width: calc((100% / 15) * 0.6); /* Black keys are 60% of white key width */
     }
+    
+    /* Update white key positions to be responsive */
+    .white-key:nth-of-type(1) { left: 0; }
+    .white-key:nth-of-type(2) { left: calc((100% / 15) * 1); }
+    .white-key:nth-of-type(3) { left: calc((100% / 15) * 2); }
+    .white-key:nth-of-type(4) { left: calc((100% / 15) * 3); }
+    .white-key:nth-of-type(5) { left: calc((100% / 15) * 4); }
+    .white-key:nth-of-type(6) { left: calc((100% / 15) * 5); }
+    .white-key:nth-of-type(7) { left: calc((100% / 15) * 6); }
+    .white-key:nth-of-type(8) { left: calc((100% / 15) * 7); }
+    .white-key:nth-of-type(9) { left: calc((100% / 15) * 8); }
+    .white-key:nth-of-type(10) { left: calc((100% / 15) * 9); }
+    .white-key:nth-of-type(11) { left: calc((100% / 15) * 10); }
+    .white-key:nth-of-type(12) { left: calc((100% / 15) * 11); }
+    .white-key:nth-of-type(13) { left: calc((100% / 15) * 12); }
+    .white-key:nth-of-type(14) { left: calc((100% / 15) * 13); }
+    .white-key:nth-of-type(15) { left: calc((100% / 15) * 14); }
+    
+    /* Adjust black key positions for mobile */
+    #key1 { left: calc((100% / 15) * 0.7); }  /* C#3 */
+    #key3 { left: calc((100% / 15) * 1.7); } /* D#3 */
+    #key6 { left: calc((100% / 15) * 3.7); } /* F#3 */
+    #key8 { left: calc((100% / 15) * 4.7); }  /* G#3 */
+    #key10 { left: calc((100% / 15) * 5.7); } /* A#3 */
+    #key13 { left: calc((100% / 15) * 7.7); } /* C#4 */
+    #key15 { left: calc((100% / 15) * 8.7); } /* D#4 */
+    #key18 { left: calc((100% / 15) * 10.7); } /* F#4 */
+    #key20 { left: calc((100% / 15) * 11.7); } /* G#4 */
+    #key22 { left: calc((100% / 15) * 12.7); } /* A#4 */
     
     .white-key::before, .black-key::before {
         font-size: 10px; /* Smaller note labels */
-        bottom: 5px;
+    }
+    
+    /* Improve touch target size for piano keys on mobile */
+    .piano-key {
+        min-height: 44px; /* Ensure minimum touch target size for iOS */
+    }
+    
+    /* Ensure minimum touch target width */
+    .white-key, .black-key {
+        min-width: 22px; /* Half of Apple's recommended 44px minimum */
+    }
+    
+    /* Specific adjustments for landscape orientation */
+    @media (max-width: 896px) and (orientation: landscape) {
+        .piano {
+            height: 120px; /* Shorter piano height for landscape */
+        }
+        
+        .white-key::before {
+            bottom: 5px; /* Move labels closer to bottom in landscape */
+            font-size: 9px; /* Smaller font in landscape */
+        }
+        
+        /* Optimize touch areas in landscape */
+        .black-key {
+            height: 55%; /* Shorter black keys in landscape */
+        }
+    }
+    
+    /* iPhone-specific adjustments */
+    @media only screen and (device-width: 390px) and (device-height: 844px), /* iPhone 12/13 Pro */
+           only screen and (device-width: 428px) and (device-height: 926px), /* iPhone 12/13 Pro Max */
+           only screen and (device-width: 375px) and (device-height: 812px), /* iPhone X/XS */
+           only screen and (device-width: 414px) and (device-height: 896px) { /* iPhone XR/XS Max */
+        .piano {
+            height: 140px; /* Adjusted height for iPhones */
+        }
+    }
+    
+    /* iPad-specific adjustments */
+    @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) {
+        .piano {
+            height: 180px; /* Taller piano for iPads */
+        }
+        
+        .white-key::before {
+            font-size: 12px; /* Larger labels on iPad */
+            bottom: 12px;
+        }
     }
     
     .controls {
