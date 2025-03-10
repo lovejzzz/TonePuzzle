@@ -39,7 +39,10 @@ class SequencePuzzle {
         // The level display is now the container for the level selector
         this.levelDisplayElement = document.getElementById('level-display');
         
-        // Initially hide the submit button until the user has entered enough notes
+        // Initially hide the buttons until the game starts
+        this.replaySequenceButton.style.display = 'none';
+        this.playUserSequenceButton.style.display = 'none';
+        this.clearUserSequenceButton.style.display = 'none';
         this.submitSequenceButton.style.display = 'none';
         
         // Create container for empty note boxes in ear training mode
@@ -126,6 +129,11 @@ class SequencePuzzle {
         this.generateNewSequence();
         this.startButton.disabled = false;
         this.hasStartedSequence = false;
+        
+        // Show the replay and clear buttons when starting the game
+        this.replaySequenceButton.style.display = 'block';
+        this.playUserSequenceButton.style.display = 'block';
+        this.clearUserSequenceButton.style.display = 'block';
         
         // Hide the submit button when starting a new game
         this.submitSequenceButton.style.display = 'none';
