@@ -81,9 +81,12 @@
                 <div class="sequence-display">
                     <div class="sequence-header">
                         <h2>Original Sequence</h2>
-                        <button id="replay-sequence" class="replay-btn" title="Replay Sequence">
-                            <span>▶</span>
-                        </button>
+                        <div class="tooltip-container">
+                            <button id="replay-sequence" class="replay-btn">
+                                <span>▶</span>
+                            </button>
+                            <div class="tooltip-text">Play Original Sequence (Space)</div>
+                        </div>
                     </div>
                     <div id="original-sequence" class="sequence"></div>
                 </div>
@@ -139,7 +142,7 @@
                                 <button id="submit-sequence" class="submit-btn">
                                     Submit
                                 </button>
-                                <div class="tooltip-text">Submit Sequence (Space)</div>
+                                <div class="tooltip-text">Submit Sequence (Enter)</div>
                             </div>
                         </div>
                     </div>

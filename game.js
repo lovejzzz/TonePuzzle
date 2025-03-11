@@ -97,11 +97,17 @@ class SequencePuzzle {
         
         // Keyboard shortcuts for game actions
         document.addEventListener('keydown', (e) => {
-            // Space key shortcut for submit
-            if (e.code === 'Space' && this.submitSequenceButton.style.display === 'block') {
-                // Prevent default space bar behavior (like scrolling)
+            // Enter key shortcut for submit
+            if (e.code === 'Enter' && this.submitSequenceButton.style.display === 'block') {
                 e.preventDefault();
                 this.checkSequence();
+            }
+            
+            // Space key shortcut for playing original sequence
+            if (e.code === 'Space' && this.replaySequenceButton.style.display === 'block') {
+                // Prevent default space bar behavior (like scrolling)
+                e.preventDefault();
+                this.playOriginalSequence();
             }
             
             // Delete key shortcut for clear
