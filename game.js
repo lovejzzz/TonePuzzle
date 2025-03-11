@@ -36,14 +36,20 @@ class SequencePuzzle {
         this.clearUserSequenceButton = document.getElementById('clear-user-sequence');
         this.levelSelector = document.getElementById('level-selector');
         
+        // Get the sequence display and sequence input container elements
+        this.sequenceDisplayElement = document.querySelector('.sequence-display');
+        this.sequenceInputElement = document.querySelector('.sequence-input');
+        
         // The level display is now the container for the level selector
         this.levelDisplayElement = document.getElementById('level-display');
         
-        // Initially hide the buttons until the game starts
+        // Initially hide the buttons and sequence areas until the game starts
         this.replaySequenceButton.style.display = 'none';
         this.playUserSequenceButton.style.display = 'none';
         this.clearUserSequenceButton.style.display = 'none';
         this.submitSequenceButton.style.display = 'none';
+        this.sequenceDisplayElement.style.display = 'none';
+        this.sequenceInputElement.style.display = 'none';
         
         // Create container for empty note boxes in ear training mode
         this.emptyBoxesContainer = document.createElement('div');
@@ -130,7 +136,9 @@ class SequencePuzzle {
         this.startButton.disabled = false;
         this.hasStartedSequence = false;
         
-        // Show the replay and clear buttons when starting the game
+        // Show the sequence areas and buttons when starting the game
+        this.sequenceDisplayElement.style.display = 'block';
+        this.sequenceInputElement.style.display = 'block';
         this.replaySequenceButton.style.display = 'block';
         this.playUserSequenceButton.style.display = 'block';
         this.clearUserSequenceButton.style.display = 'block';
