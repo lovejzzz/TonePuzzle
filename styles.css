@@ -727,6 +727,11 @@ button:disabled {
     align-items: center;
 }
 
+/* Ensure tooltip container doesn't disrupt layout */
+.tooltip-container {
+    display: inline-flex;
+}
+
 .replay-btn {
     background-color: #4361ee;
     color: white;
@@ -906,11 +911,12 @@ body.dark-theme #level-selector:focus {
 }
 
 /* Custom Tooltip Styles */
-.submit-btn.tooltip {
+.tooltip-container {
     position: relative;
+    display: inline-block;
 }
 
-.submit-btn .tooltip-text {
+.tooltip-container .tooltip-text {
     visibility: hidden;
     width: auto;
     background-color: rgba(0, 0, 0, 0.8);
@@ -919,7 +925,7 @@ body.dark-theme #level-selector:focus {
     border-radius: 6px;
     padding: 5px 10px;
     position: absolute;
-    z-index: 100;
+    z-index: 9999;
     bottom: 125%;
     left: 50%;
     transform: translateX(-50%);
@@ -927,9 +933,11 @@ body.dark-theme #level-selector:focus {
     opacity: 0;
     transition: opacity 0.1s;
     pointer-events: none;
+    font-size: 14px;
+    font-weight: normal;
 }
 
-.submit-btn .tooltip-text::after {
+.tooltip-container .tooltip-text::after {
     content: "";
     position: absolute;
     top: 100%;
@@ -940,17 +948,17 @@ body.dark-theme #level-selector:focus {
     border-color: rgba(0, 0, 0, 0.8) transparent transparent transparent;
 }
 
-.submit-btn:hover .tooltip-text {
+.tooltip-container:hover .tooltip-text {
     visibility: visible;
     opacity: 1;
 }
 
 /* Dark theme tooltip */
-body.dark-theme .submit-btn .tooltip-text {
+body.dark-theme .tooltip-container .tooltip-text {
     background-color: rgba(255, 82, 82, 0.9);
 }
 
-body.dark-theme .submit-btn .tooltip-text::after {
+body.dark-theme .tooltip-container .tooltip-text::after {
     border-color: rgba(255, 82, 82, 0.9) transparent transparent transparent;
 }
 

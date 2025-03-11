@@ -129,13 +129,18 @@
                             <button id="play-user-sequence" class="replay-btn" title="Play Your Sequence">
                                 <span>▶</span>
                             </button>
-                            <button id="clear-user-sequence" class="clear-btn" title="Clear Your Sequence">
-                                Clear
-                            </button>
-                            <button id="submit-sequence" class="submit-btn tooltip">
-                                Submit
-                                <span class="tooltip-text">Submit Sequence (Space)</span>
-                            </button>
+                            <div class="tooltip-container">
+                                <button id="clear-user-sequence" class="clear-btn">
+                                    Clear
+                                </button>
+                                <div class="tooltip-text">Clear Sequence (Delete)</div>
+                            </div>
+                            <div class="tooltip-container">
+                                <button id="submit-sequence" class="submit-btn">
+                                    Submit
+                                </button>
+                                <div class="tooltip-text">Submit Sequence (Space)</div>
+                            </div>
                         </div>
                     </div>
                     <div id="user-sequence" class="sequence"></div>
