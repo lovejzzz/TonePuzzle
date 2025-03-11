@@ -110,6 +110,12 @@ class SequencePuzzle {
                 this.playOriginalSequence();
             }
             
+            // Command key shortcut for playing user sequence
+            if ((e.metaKey || e.ctrlKey) && this.playUserSequenceButton.style.display === 'block') {
+                e.preventDefault();
+                this.playUserSequence();
+            }
+            
             // Delete key shortcut for clear
             if ((e.code === 'Delete' || e.code === 'Backspace') && this.clearUserSequenceButton.style.display === 'block') {
                 e.preventDefault();
