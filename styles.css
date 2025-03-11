@@ -905,6 +905,55 @@ body.dark-theme #level-selector:focus {
     line-height: 1;
 }
 
+/* Custom Tooltip Styles */
+.tooltip {
+    position: relative;
+    display: inline-block;
+}
+
+.tooltip .tooltip-text {
+    visibility: hidden;
+    width: auto;
+    background-color: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 10px;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%;
+    left: 50%;
+    transform: translateX(-50%);
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity 0.1s;
+}
+
+.tooltip .tooltip-text::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: rgba(0, 0, 0, 0.8) transparent transparent transparent;
+}
+
+.tooltip:hover .tooltip-text {
+    visibility: visible;
+    opacity: 1;
+}
+
+/* Dark theme tooltip */
+body.dark-theme .tooltip .tooltip-text {
+    background-color: rgba(255, 82, 82, 0.9);
+}
+
+body.dark-theme .tooltip .tooltip-text::after {
+    border-color: rgba(255, 82, 82, 0.9) transparent transparent transparent;
+}
+
 /* Toggle Switch */
 .mode-toggle {
     display: flex;
