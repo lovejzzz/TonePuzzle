@@ -95,6 +95,16 @@ class SequencePuzzle {
         // Submit sequence button
         this.submitSequenceButton.addEventListener('click', () => this.checkSequence());
         
+        // Space key shortcut for submit
+        document.addEventListener('keydown', (e) => {
+            // Only trigger if Space key is pressed and the submit button is visible
+            if (e.code === 'Space' && this.submitSequenceButton.style.display === 'block') {
+                // Prevent default space bar behavior (like scrolling)
+                e.preventDefault();
+                this.checkSequence();
+            }
+        });
+        
         // Clear user sequence button
         this.clearUserSequenceButton.addEventListener('click', () => this.clearUserSequence());
         
